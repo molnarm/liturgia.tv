@@ -1,2 +1,9 @@
-.venv/
+# Visual Studio Code
 .vscode/
+
+# Python
+.venv/
+
+# Django #
+__pycache__/
+db.sqlite3
