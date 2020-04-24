@@ -1,0 +1,24 @@
+{% extends "zsolozsma/layout.html" %}
+{% block title %}Kezdőlap{% endblock %}
+{% block content %}
+<h1>Közelgő közvetítések</h1>
+
+<div class="schedule">
+    <table>
+    {% for item in schedule %}
+        <tr>
+            <td>
+                {{ item.date }}
+            </td>
+            <td>
+                {{ item.time }}
+            </td>
+            <td>
+                {{ item.event.name }} ({{ item.location.name }})
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

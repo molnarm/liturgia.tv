@@ -1,0 +1,28 @@
+{% extends "zsolozsma/layout.html" %}
+{% block title %}{{ location.name }}{% endblock %}
+{% block content %}
+<div class="location">
+    <h1>{{ location.name }}</h1>
+    <p>{{ location.fullname }}</p>
+    {% if location.homepage %}
+    <a href="{{ location.homepage }}">{{ location.homepage }}</a>
+    {% endif %}
+</div>
+<div class="schedule">
+    <table>
+    {% for item in schedule %}
+        <tr>
+            <td>
+                {{ item.date }}
+            </td>
+            <td>
+                {{ item.time }}
+            </td>
+            <td>
+                {{ item.event.name }}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}

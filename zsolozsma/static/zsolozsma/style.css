@@ -1,0 +1,74 @@
+body, ul, li {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    text-align: center;
+    font-size: 24px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.content a:hover{
+    text-decoration: underline;
+}
+
+nav {
+    min-width: 60%;
+    margin: 20px auto;
+    font-family: 'Oxygen', sans-serif;
+}
+
+nav li {
+    display: inline-block;
+    min-width: 200px;
+}
+
+nav a {
+    display: block;
+    height: 50px;
+}
+
+nav span {
+    vertical-align: middle;
+    line-height: 50px;
+}
+
+.material-icons {
+    font-size: 36px;
+    padding: 3px;
+}
+
+nav li:hover a {
+    color: #cc3300;
+}
+
+.schedule {
+    margin: 50px 0;
+}
+
+.schedule table {
+    margin: 0 auto;
+}
+
+@media only screen and (max-width: 600px){
+    nav li {
+        min-width: 100px;
+    }
+    nav .title {
+        display: none;
+    }
+}
+
+/* fekete */
+body {
+    background-color: black;
+    color: white;
+}
+
+a {
+    color: white;
+}
