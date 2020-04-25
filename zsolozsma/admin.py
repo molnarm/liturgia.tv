@@ -1,9 +1,7 @@
 from django.contrib import admin
 import zsolozsma.models
 
-admin.site.register(zsolozsma.models.CustomEventSchedule)
 admin.site.register(zsolozsma.models.LiturgyText)
-admin.site.register(zsolozsma.models.CachedBroadcast)
 
 
 @admin.register(zsolozsma.models.Location)

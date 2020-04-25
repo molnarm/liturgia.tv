@@ -1,12 +1,9 @@
 {% extends "zsolozsma/layout.html" %}
-{% block title %}{{ location.name }}{% endblock %}
+{% block title %}{{ liturgy.name }}{% endblock %}
 {% block content %}
-<div class="location">
-    <h1>{{ location.name }}</h1>
-    <p>{{ location.fullname }}</p>
-    {% if location.homepage %}
-    <a href="{{ location.homepage }}">{{ location.homepage }}</a>
-    {% endif %}
+<div class="liturgy">
+    <h1>{{ liturgy.name }}</h1>
+    <p>{{ liturgy.description }}</p>
 </div>
 <div class="schedule">
     <table>
@@ -19,7 +16,10 @@
                 {{ item.time }}
             </td>
             <td>
-               {{ item.event.name }} (<a href="{% url 'liturgy' item.event.liturgy.slug %}">{{ item.event.liturgy.name }}</a>)
+               <a href="{% url 'location' item.event.location.slug %}">{{ item.event.location.name }}</a>
+            </td>
+            <td>
+                {{ item.event.name }}
             </td>
         </tr>
     {% endfor %}

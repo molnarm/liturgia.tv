@@ -9,3 +9,6 @@ __pycache__/
 db.sqlite3
 *.pyc
 .env
+
+#
+todo.txt

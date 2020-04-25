@@ -1,6 +1,24 @@
 {% extends "zsolozsma/layout.html" %}
-{% block title %}{{ item.event.name }}{% endblock %}
+{% block title %}Esemény keresése{% endblock %}
 {% block content %}
-<h1>{{ item.event.name }}</h1>
-
+<div class="schedule">
+    <table>
+    {% for item in schedule %}
+        <tr>
+            <td>
+                {{ item.date }}
+            </td>
+            <td>
+                {{ item.time }}
+            </td>
+            <td>
+               <a href="{% url 'location' item.event.location.slug %}">{{ item.event.location.name }}</a>
+            </td>
+            <td>
+               <a href="{% url 'liturgy' item.event.liturgy.slug %}">{{ item.event.liturgy.name }}</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
 {% endblock %}

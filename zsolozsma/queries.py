@@ -1,28 +1,34 @@
 from operator import attrgetter
 from datetime import datetime, timedelta
 from zsolozsma import models
+from django.db.models import Q
 
 
 class ScheduleItem(object):
     event = None
-    location = None
     date = None
     time = None
 
-    def __init__(self, event, location, date, time):
-        self.location = location
+    def __init__(self, event,  date, time):
         self.event = event
         self.date = date
         self.time = time
 
 
-def get_schedule(location=None, fixed_date=None):
+def get_schedule(
+        location=None,
+        location_slug=None,
+        date=None,
+        liturgy=None,
+        liturgy_slug=None,
+        event=None,
+        event_slug=None):
+    events = models.Event.objects.all()
 
-    if(fixed_date):
-        date = datetime.strptime(fixed_date, '%Y-%M-%d').date()
-        dates = [(date, date.weekday())]
-        schedule_query = models.CustomEventSchedule.objects.filter(
-            date=fixed_date)
+    if(date):
+        weekday = date.weekday()
+        dates = [(date, weekday)]
+        events = events.filter(Q(date=date) | Q(day_of_week=weekday))
     else:
         MAX_DAYS = 7
         today = datetime.today().date()
@@ -30,30 +36,30 @@ def get_schedule(location=None, fixed_date=None):
 
         dates = [(date, date.weekday())
                  for date in [today + timedelta(days=i) for i in range(MAX_DAYS)]]
-        schedule_query = models.CustomEventSchedule.objects.filter(
-            date__gte=today, date__lte=end_date)
+        events = events.filter(
+            Q(date__gte=today, date__lte=end_date) | Q(date__isnull=True))
 
     if (location):
-        events = list(location.event_set.all())
-        schedule_query = schedule_query.filter(event__location=location)
-    else:
-        events = list(models.Event.objects.all())
+        events = events.filter(location=location)
+    elif(location_slug):
+        events = events.filter(location_slug=location_slug)
 
-    event_schedules = list(schedule_query)
+    if(liturgy):
+        events = events.filter(liturgy=liturgy)
+    elif(liturgy_slug):
+        events = events.filter(liturgy_slug=liturgy_slug)
+
+    if(event):
+        events = [event]
+    elif(event_slug):
+        events = events.filter(slug=event_slug)
 
     schedule = list()
-    for (date, day) in dates:
-        for event in events:
-            custom_time = next(
-                (t for t in event_schedules if t.date == date), None)
-            if(custom_time):
-                schedule.append(ScheduleItem(
-                    event, event.location, date, custom_time.time))
-            elif (len(event.times) > day):
-                time = event.times[day]
-                if (time):
-                    schedule.append(ScheduleItem(
-                        event, event.location, date, time))
+    for (_date, _day) in dates:
+        schedule.extend([ScheduleItem(event, _date, event.time)
+                         for event in events if event.date == _date])
+        schedule.extend([ScheduleItem(event, _date, event.time)
+                         for event in events if event.day_of_week == _day])
 
     schedule.sort(key=attrgetter('date', 'time'))
 
