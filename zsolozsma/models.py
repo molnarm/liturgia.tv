@@ -46,13 +46,13 @@ class Event(models.Model):
     """Közvetített esemény (adott szertartás egy adott helyen, adott időpontban)"""
 
     class Weekdays(models.IntegerChoices):
-        Hétfő = 0,
-        Kedd = 1,
-        Szerda = 2,
-        Csütörtök = 3,
-        Péntek = 4,
-        Szombat = 5,
-        Vasárnap = 6
+        hétfő = 0,
+        kedd = 1,
+        szerda = 2,
+        csütörtök = 3,
+        péntek = 4,
+        szombat = 5,
+        vasárnap = 6
 
     location = models.ForeignKey(
         "Location", verbose_name='Helyszín', on_delete=models.CASCADE, blank=False)
@@ -63,8 +63,6 @@ class Event(models.Model):
 
     day_of_week = models.IntegerField(
         'Hét napja', null=True, blank=True, choices=Weekdays.choices)
-    date = models.DateField('Dátum (egyedi alkalomnál)',
-                            auto_now=False, auto_now_add=False, null=True, blank=True)
     time = models.TimeField('Kezdés ideje', auto_now=False,
                             auto_now_add=False, null=True, blank=True)
     video_url = models.URLField(
@@ -76,10 +74,7 @@ class Event(models.Model):
         super(Event, self).save(*args, **kwargs)
 
     def __str__(self):
-        if(self.date):
-            date_str = self.date
-        else:
-            date_str = Event.Weekdays(self.day_of_week).name
+        date_str = Event.Weekdays(self.day_of_week).name
 
         return "%s (%s %s %s %s)" % (self.name, self.location.name, self.liturgy.name, date_str, self.time)
 

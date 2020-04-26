@@ -36,8 +36,7 @@ def get_schedule(
 
         dates = [(date, date.weekday())
                  for date in [today + timedelta(days=i) for i in range(MAX_DAYS)]]
-        events = events.filter(
-            Q(date__gte=today, date__lte=end_date) | Q(date__isnull=True))
+        events = events.filter(date__isnull=True)
 
     if (location):
         events = events.filter(location=location)
@@ -56,8 +55,6 @@ def get_schedule(
 
     schedule = list()
     for (_date, _day) in dates:
-        schedule.extend([ScheduleItem(event, _date, event.time)
-                         for event in events if event.date == _date])
         schedule.extend([ScheduleItem(event, _date, event.time)
                          for event in events if event.day_of_week == _day])
 
