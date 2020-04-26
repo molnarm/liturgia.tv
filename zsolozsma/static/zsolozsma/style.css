@@ -42,7 +42,7 @@ nav span {
     padding: 3px;
 }
 
-nav li:hover a {
+a:hover {
     color: #cc3300;
 }
 

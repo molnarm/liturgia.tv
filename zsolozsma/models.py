@@ -25,6 +25,10 @@ class Location(models.Model):
     def __str__(self):
         return "%s (%s)" % (self.name, self.fullname)
 
+    class Meta:
+        verbose_name = 'Helyszín'
+        verbose_name_plural = 'Helyszínek'
+
 
 class Liturgy(models.Model):
     """Szertartás"""
@@ -41,6 +45,10 @@ class Liturgy(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Szertartás'
+        verbose_name_plural = 'Szertartások'
+
 
 class Event(models.Model):
     """Közvetített esemény (adott szertartás egy adott helyen, adott időpontban)"""
@@ -54,20 +62,24 @@ class Event(models.Model):
         szombat = 5,
         vasárnap = 6
 
-    location = models.ForeignKey(
-        "Location", verbose_name='Helyszín', on_delete=models.CASCADE, blank=False)
-    liturgy = models.ForeignKey(
-        "Liturgy", verbose_name='Szertartás', on_delete=models.CASCADE, blank=False)
-    name = models.CharField('Név', max_length=100, blank=False)
-    slug = models.SlugField('URL részlet', max_length=100, blank=False)
-
     day_of_week = models.IntegerField(
         'Hét napja', null=True, blank=True, choices=Weekdays.choices)
     time = models.TimeField('Kezdés ideje', auto_now=False,
                             auto_now_add=False, null=True, blank=True)
+
+    name = models.CharField('Név', max_length=100, blank=False)
+    location = models.ForeignKey(
+        "Location", verbose_name='Helyszín', on_delete=models.CASCADE, blank=False)
+    liturgy = models.ForeignKey(
+        "Liturgy", verbose_name='Szertartás', on_delete=models.CASCADE, blank=False)
+
     video_url = models.URLField(
         'Egyedi URL a közvetítéshez', max_length=500, blank=True)
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
+
+    slug = models.SlugField('URL részlet', max_length=100, blank=False)
+    hash = models.CharField('URL hash', max_length=8,
+                            blank=False, null=False, unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -76,7 +88,11 @@ class Event(models.Model):
     def __str__(self):
         date_str = Event.Weekdays(self.day_of_week).name
 
-        return "%s (%s %s %s %s)" % (self.name, self.location.name, self.liturgy.name, date_str, self.time)
+        return "%s (%s %s)" % (self.name, date_str, self.time)
+
+    class Meta:
+        verbose_name = 'Esemény'
+        verbose_name_plural = 'Események'
 
 
 class LiturgyText(models.Model):
@@ -87,3 +103,7 @@ class LiturgyText(models.Model):
     date = models.DateField("Dátum", auto_now=False,
                             auto_now_add=False, blank=False)
     text_url = models.URLField('Szöveg URL', max_length=500, blank=True)
+
+    class Meta:
+        verbose_name = 'Szöveg'
+        verbose_name_plural = 'Szövegek'

@@ -19,6 +19,9 @@
             <td>
                {{ item.event.name }} (<a href="{% url 'liturgy' item.event.liturgy.slug %}">{{ item.event.liturgy.name }}</a>)
             </td>
+             <td>
+                <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons">&#xe63a;</span></a>
+             </td>
         </tr>
     {% endfor %}
     </table>

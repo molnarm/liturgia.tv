@@ -21,6 +21,9 @@
             <td>
                 {{ item.event.name }}
             </td>
+             <td>
+                <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons">&#xe63a;</span></a>
+             </td>
         </tr>
     {% endfor %}
     </table>

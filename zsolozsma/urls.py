@@ -25,4 +25,7 @@ urlpatterns = [
     re_path(r'^(?:hely/)?(?P<location>[\w-]+)/$', views.location, name='location'),
     re_path(r'^(?:hely/)?(?P<location>[\w-]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.location, name='location-date'),
     re_path(r'^(?:hely/)?(?P<location>[\w-]+)/(?P<event>[\w-]+)/$', views.location, name='location-event'),
+
+    # Közvetítés
+    re_path(r'^kozvetites/(?P<hash>[\w]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.broadcast, name='broadcast'),
 ]

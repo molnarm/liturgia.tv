@@ -2,6 +2,7 @@ from operator import attrgetter
 from datetime import datetime, timedelta
 from zsolozsma import models
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ScheduleItem(object):
@@ -32,11 +33,9 @@ def get_schedule(
     else:
         MAX_DAYS = 7
         today = datetime.today().date()
-        end_date = today + timedelta(days=MAX_DAYS)
 
         dates = [(date, date.weekday())
                  for date in [today + timedelta(days=i) for i in range(MAX_DAYS)]]
-        events = events.filter(date__isnull=True)
 
     if (location):
         events = events.filter(location=location)
@@ -61,3 +60,36 @@ def get_schedule(
     schedule.sort(key=attrgetter('date', 'time'))
 
     return schedule
+
+
+class BroadcastItem(object):
+    event_name = None
+    liturgy_name = None
+    video_url = None
+    text_url = None
+
+
+def get_broadcast(event, date):
+    broadcast_item = BroadcastItem()
+
+    broadcast_item.event_name = event.name
+    broadcast_item.location_name = event.location.name
+    broadcast_item.liturgy_name = event.liturgy.name
+
+    if(event.video_url):
+        broadcast_item.video_url = event.video_url
+    else:
+        broadcast_item.video_url = event.location.video_url
+
+    if(event.text_url):
+        broadcast_item.text_url = event.text_url
+    else:
+        try:
+            liturgy_text = models.LiturgyText.objects.get(
+                liturgy=event.liturgy, date=date)
+            if(liturgy_text):
+                broadcast_item.text_url = event.liturgy_text.text_url
+        except ObjectDoesNotExist:
+            pass
+
+    return broadcast_item
