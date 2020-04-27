@@ -1,0 +1,25 @@
+<div class="schedule">
+    <table>
+    {% for item in schedule %}
+        <tr>
+            <td>
+                {{ item.date }}
+            </td>
+            <td>
+                {{ item.time }}
+            </td>
+            {% if show_location %}
+            <td>
+               <a href="{% url 'location' item.event.location.slug %}">{{ item.event.location.name }}</a>
+            </td>
+            {% endif %}
+            <td>
+               {{ item.event.name }}
+            </td>
+             <td>
+                <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons">&#xe63a;</span></a>
+             </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>

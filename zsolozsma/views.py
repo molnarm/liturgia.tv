@@ -28,7 +28,7 @@ def location(request, location, date=None, event=None):
     schedule = queries.get_schedule(
         location=location_object, date=date, event_slug=event)
 
-    return render(request, 'zsolozsma/location.html', { 'location': location_object, 'schedule': schedule })
+    return render(request, 'zsolozsma/location.html', {'location': location_object, 'schedule': schedule})
 
 
 def liturgy(request, liturgy, date=None, event=None):
@@ -39,7 +39,7 @@ def liturgy(request, liturgy, date=None, event=None):
     schedule = queries.get_schedule(
         liturgy=liturgy_object, date=date, event_slug=event)
 
-    return render(request, 'zsolozsma/liturgy.html', { 'liturgy': liturgy_object, 'schedule': schedule })
+    return render(request, 'zsolozsma/liturgy.html', {'liturgy': liturgy_object, 'schedule': schedule})
 
 
 def event(request, event, date=None, location=None):
@@ -49,7 +49,7 @@ def event(request, event, date=None, location=None):
     schedule = queries.get_schedule(
         event_slug=event, date=date, location_slug=location)
     if(schedule):
-        return render(request, 'zsolozsma/event.html', { 'schedule': schedule })
+        return render(request, 'zsolozsma/event.html', {'schedule': schedule})
 
     raise Http404("Nincs ilyen esemény!")
 
@@ -60,4 +60,4 @@ def broadcast(request, hash, date):
 
     broadcast = queries.get_broadcast(event_object, date)
 
-    return render(request, 'zsolozsma/broadcast.html', { 'broadcast': broadcast })
+    return render(request, 'zsolozsma/broadcast.html', {'broadcast': broadcast})

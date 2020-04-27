@@ -5,27 +5,5 @@
     <h1>{{ liturgy.name }}</h1>
     <p>{{ liturgy.description }}</p>
 </div>
-<div class="schedule">
-    <table>
-    {% for item in schedule %}
-        <tr>
-            <td>
-                {{ item.date }}
-            </td>
-            <td>
-                {{ item.time }}
-            </td>
-            <td>
-               <a href="{% url 'location' item.event.location.slug %}">{{ item.event.location.name }}</a>
-            </td>
-            <td>
-                {{ item.event.name }}
-            </td>
-             <td>
-                <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons">&#xe63a;</span></a>
-             </td>
-        </tr>
-    {% endfor %}
-    </table>
-</div>
+{% include 'zsolozsma/snippets/schedule.html' with show_location=True %}
 {% endblock %}

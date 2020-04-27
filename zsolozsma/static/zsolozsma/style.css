@@ -41,6 +41,10 @@ nav span {
     margin: 0 auto;
 }
 
+.schedule td {
+    width: 20%;
+}
+
 .iframe-container {
     width: 50%;
     height: 100%;
