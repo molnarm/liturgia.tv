@@ -2,4 +2,28 @@
 {% block title %}{{ broadcast.event_name }} - {{ broadcast.location_name }}{% endblock %}
 {% block content %}
 
+{% if broadcast.video_iframe %}
+    <div class="iframe-container broadcast-video {% if not broadcast.has_text or not broadcast.text_iframe %}fullwidth{% endif %}">
+        <iframe src="{{ broadcast.video_url }}"></iframe>
+    </div>
+{% else %}
+        {% include "zsolozsma/snippets/warning.html" with content='A videót csak egy új ablakban lehet megnyitni.' %}
+        <script type="text/javascript">
+            window.open('{{ broadcast.video_url }}', '_blank', 'noopener');
+        </script>
+{% endif %}
+
+{% if broadcast.has_text %}
+    {% if broadcast.text_iframe %}
+        <div class="iframe-container {% if not broadcast.video_iframe %}fullwidth{% endif %}">
+            <iframe src="{{ broadcast.text_url }}"></iframe>        
+        </div>
+    {% else %}
+        {% include "zsolozsma/snippets/warning.html" with content='A szöveget csak egy új ablakban lehet megnyitni.' %} 
+        <script type="text/javascript">
+            window.open('{{ broadcast.text_url }}', '_blank', 'noopener');
+        </script>
+    {% endif %}
+{% endif %}
+
 {% endblock %}

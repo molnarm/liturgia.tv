@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django.utils.text import slugify
+import secrets
 
 
 class Location(models.Model):
@@ -83,6 +84,10 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+
+        if(self.pk is None):
+            self.hash = secrets.token_hex(4)
+
         super(Event, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -107,3 +112,23 @@ class LiturgyText(models.Model):
     class Meta:
         verbose_name = 'Szöveg'
         verbose_name_plural = 'Szövegek'
+
+
+class Broadcast(models.Model):
+    event = models.ForeignKey(
+        "Event", verbose_name='Esemény', on_delete=models.CASCADE, blank=False)
+    date = models.DateField('Dátum', auto_now=False,
+                            auto_now_add=False, blank=False)
+    video_url = models.URLField('Videó URL', max_length=500, blank=False)
+    video_iframe = models.BooleanField(
+        'Videó beágyazható', blank=True, default=True)
+    text_url = models.URLField('Szöveg URL', max_length=500, blank=True)
+    text_iframe = models.BooleanField(
+        'Szöveg beágyazható', blank=True, default=True)
+
+    class Meta:
+        verbose_name = 'Közvetítés'
+        verbose_name_plural = 'Közvetítések'
+
+    def __str__(self):
+        return "%s %s %s %s" % (self.event.location.name, self.event.name, self.date, self.event.time)

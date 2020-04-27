@@ -1,15 +1,10 @@
 from django.contrib import admin
 import zsolozsma.models
-import secrets
 
 
 class EventInline(admin.TabularInline):
     model = zsolozsma.models.Event
     readonly_fields = ('slug', 'hash',)
-
-    def get_changeform_initial_data(self, request):
-        hash = secrets.token_hex(4)
-        return {'hash': hash}
 
 
 @admin.register(zsolozsma.models.Location)
@@ -26,3 +21,8 @@ class LiturgyTextInline(admin.TabularInline):
 class LiturgyAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
     inlines = [LiturgyTextInline, ]
+
+
+@admin.register(zsolozsma.models.Broadcast)
+class BroadcastAdmin(admin.ModelAdmin):
+    pass
