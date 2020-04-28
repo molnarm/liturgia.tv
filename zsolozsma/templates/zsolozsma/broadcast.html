@@ -3,8 +3,14 @@
 {% block content %}
 
 {% if broadcast.video_iframe %}
-    <div class="iframe-container broadcast-video {% if not broadcast.has_text or not broadcast.text_iframe %}fullwidth{% endif %}">
-        <iframe src="{{ broadcast.video_url }}"></iframe>
+    <div class="container{% if not broadcast.has_text or not broadcast.text_iframe %}fullwidth{% endif %}">
+        {% if broadcast.video_only %}
+            <div class="video-16-9">
+                <iframe src="{{ broadcast.video_url }}"></iframe>
+            </div>
+        {% else %}
+            <iframe src="{{ broadcast.video_url }}"></iframe>
+        {% endif %}
     </div>
 {% else %}
         {% include "zsolozsma/snippets/warning.html" with content='A videót csak egy új ablakban lehet megnyitni.' %}
@@ -15,7 +21,7 @@
 
 {% if broadcast.has_text %}
     {% if broadcast.text_iframe %}
-        <div class="iframe-container {% if not broadcast.video_iframe %}fullwidth{% endif %}">
+        <div class="container {% if not broadcast.video_iframe %}fullwidth{% endif %}">
             <iframe src="{{ broadcast.text_url }}"></iframe>        
         </div>
     {% else %}
@@ -24,6 +30,8 @@
             window.open('{{ broadcast.text_url }}', '_blank', 'noopener');
         </script>
     {% endif %}
+{% else %}
+    {% include "zsolozsma/snippets/info.html" with content='Ehhez a közvetítéshez nem elérhető szöveg/énekrend.' %} 
 {% endif %}
 
 {% endblock %}

@@ -15,7 +15,7 @@ class Location(models.Model):
                             blank=False, unique=True)
     homepage = models.URLField('Honlap', blank=True)
     youtube_channel = models.CharField(
-        'YouTube csatorna ID', max_length=20, blank=True)
+        'YouTube csatorna ID', max_length=24, blank=True)
     video_url = models.URLField(
         'URL a közvetítéshez', max_length=500, blank=True)
 
@@ -122,6 +122,8 @@ class Broadcast(models.Model):
     video_url = models.URLField('Videó URL', max_length=500, blank=False)
     video_iframe = models.BooleanField(
         'Videó beágyazható', blank=True, default=True)
+    video_only = models.BooleanField(
+        'Beágyazás csak maga a videó', blank=True, default=True)
     text_url = models.URLField('Szöveg URL', max_length=500, blank=True)
     text_iframe = models.BooleanField(
         'Szöveg beágyazható', blank=True, default=True)

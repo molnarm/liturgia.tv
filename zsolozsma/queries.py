@@ -1,9 +1,10 @@
 from operator import attrgetter
 from datetime import datetime, timedelta
-from zsolozsma import models
-from django.db.models import Q
+from zsolozsma import models, youtube
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.request
+
+SCHEDULE_FUTURE_DAYS = 7
 
 
 class ScheduleItem(object):
@@ -30,13 +31,12 @@ def get_schedule(
     if(date):
         weekday = date.weekday()
         dates = [(date, weekday)]
-        events = events.filter(Q(date=date) | Q(day_of_week=weekday))
+        events = events.filter(day_of_week=weekday)
     else:
-        MAX_DAYS = 7
         today = datetime.today().date()
 
         dates = [(date, date.weekday())
-                 for date in [today + timedelta(days=i) for i in range(MAX_DAYS)]]
+                 for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
     if (location):
         events = events.filter(location=location)
@@ -67,14 +67,15 @@ class BroadcastItem(object):
     event_name = None
     liturgy_name = None
 
+    is_enabled = False
+    is_live = False
+
     video_iframe = None
     video_url = None
-    video_content = None
 
     has_text = False
     text_iframe = None
     text_url = None
-    text_content = None
 
 
 def get_broadcast(event, date):
@@ -86,12 +87,15 @@ def get_broadcast(event, date):
     broadcast_item.location_name = event.location.name
     broadcast_item.liturgy_name = event.liturgy.name
 
+    # TODO check event time and date to set enabled and live
+
     broadcast_item.has_text = bool(broadcast.text_url)
     broadcast_item.text_url = broadcast.text_url
     broadcast_item.text_iframe = broadcast.text_iframe
 
     broadcast_item.video_url = broadcast.video_url
     broadcast_item.video_iframe = broadcast.video_iframe
+    broadcast_item.video_only = broadcast.video_only
 
     return broadcast_item
 
@@ -105,10 +109,13 @@ def __get_or_create_broadcast(event, date):
         broadcast.date = date
 
     if(not broadcast.video_url):
-        # TODO YouTube
         video_url = None
+
         if(event.video_url):
             video_url = event.video_url
+        elif(event.location.youtube_channel):
+            video_url = youtube.get_video(event)
+            broadcast.video_only = True
         else:
             video_url = event.location.video_url
 
@@ -117,24 +124,24 @@ def __get_or_create_broadcast(event, date):
             broadcast.video_iframe = __check_iframe_support(video_url)
             broadcast.save()
 
-        if (not broadcast.text_url):
-            text_url = None
-            if(event.text_url):
-                text_url = event.text_url
-            else:
-                try:
-                    liturgy_text = models.LiturgyText.objects.get(
-                        liturgy=event.liturgy, date=date)
-                    if(liturgy_text):
-                        text_url = liturgy_text.text_url
-                        broadcast.save()
-                except ObjectDoesNotExist:
-                    pass
+    if (not broadcast.text_url):
+        text_url = None
+        if(event.text_url):
+            text_url = event.text_url
+        else:
+            try:
+                liturgy_text = models.LiturgyText.objects.get(
+                    liturgy=event.liturgy, date=date)
+                if(liturgy_text):
+                    text_url = liturgy_text.text_url
+                    broadcast.save()
+            except ObjectDoesNotExist:
+                pass
 
-            if (text_url):
-                broadcast.text_url = text_url
-                broadcast.text_iframe = __check_iframe_support(text_url)
-                broadcast.save()
+        if (text_url):
+            broadcast.text_url = text_url
+            broadcast.text_iframe = __check_iframe_support(text_url)
+            broadcast.save()
 
     return broadcast
 

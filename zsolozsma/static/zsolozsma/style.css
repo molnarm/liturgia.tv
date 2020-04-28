@@ -45,7 +45,7 @@ nav span {
     width: 20%;
 }
 
-.iframe-container {
+.container {
     width: 50%;
     height: 100%;
     float: left;
@@ -61,7 +61,24 @@ iframe {
     border: 0;
 }
 
-.warning span {
+.video-16-9 {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.video-16-9 iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.message {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.message span {
     vertical-align: middle;
 }
 
@@ -101,9 +118,11 @@ a:hover {
     color: #cc3300;
 }
 
+.info {
+    color: #3434ff;
+}
+
 .warning {
-    width: 80%;
-    margin: 0 auto;
     color: #ff6600;
 }
 
