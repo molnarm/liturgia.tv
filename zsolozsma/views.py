@@ -60,4 +60,7 @@ def broadcast(request, hash, date):
 
     broadcast = queries.get_broadcast(event_object, date)
 
-    return render(request, 'zsolozsma/broadcast.html', {'broadcast': broadcast})
+    if(broadcast):
+        return render(request, 'zsolozsma/broadcast.html', {'broadcast': broadcast})
+
+    raise Http404("Nincs ilyen közvetítés!")

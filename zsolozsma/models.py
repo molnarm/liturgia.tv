@@ -73,6 +73,7 @@ class Event(models.Model):
         "Location", verbose_name='Helyszín', on_delete=models.CASCADE, blank=False)
     liturgy = models.ForeignKey(
         "Liturgy", verbose_name='Szertartás', on_delete=models.CASCADE, blank=False)
+    duration = models.IntegerField('Időtartam (perc)', blank=True, null=True)
 
     video_url = models.URLField(
         'Egyedi URL a közvetítéshez', max_length=500, blank=True)

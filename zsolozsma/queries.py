@@ -12,10 +12,15 @@ class ScheduleItem(object):
     date = None
     time = None
 
+    enabled = False
+    live = False
+
     def __init__(self, event,  date, time):
         self.event = event
         self.date = date
         self.time = time
+
+        (self.enabled, self.live) = get_broadcast_status(event, date)
 
 
 def get_schedule(
@@ -26,7 +31,7 @@ def get_schedule(
         liturgy_slug=None,
         event=None,
         event_slug=None):
-    events = models.Event.objects.all()
+    events = models.Event.objects.select_related('location').all()
 
     if(date):
         weekday = date.weekday()
@@ -63,39 +68,55 @@ def get_schedule(
     return schedule
 
 
+# (enabled, live)
+def get_broadcast_status(event, date):
+    TIMEDELTA_TOLERANCE = 15
+
+    now = datetime.now()
+    if (now.date() < date):
+        return (False, False)
+
+    event_time = datetime.combine(date, event.time)
+    difference = now - event_time
+    minutes = difference.total_seconds() / 60
+
+    duration = event.duration or 60
+
+    if (minutes < - TIMEDELTA_TOLERANCE):
+        return (False, False)  # még több, mint 15 perc a kezdésig
+    elif (minutes < 0):
+        return (True, False)  # 15 percen belül kezdődik
+    elif (minutes < duration):
+        return (True, True)   # éppen tart
+    elif (minutes < duration + TIMEDELTA_TOLERANCE):
+        return (True, False)  # 15 percen belül ért véget
+    else:
+        return (False, False)
+
+
 class BroadcastItem(object):
-    event_name = None
-    liturgy_name = None
+    def __init__(self, event, broadcast):
+        self.event_name = event.name
+        self.location_name = event.location.name
+        self.liturgy_name = event.liturgy.name
 
-    is_enabled = False
-    is_live = False
+        self.has_text = bool(broadcast.text_url)
+        self.text_url = broadcast.text_url
+        self.text_iframe = broadcast.text_iframe
 
-    video_iframe = None
-    video_url = None
-
-    has_text = False
-    text_iframe = None
-    text_url = None
+        self.video_url = broadcast.video_url
+        self.video_iframe = broadcast.video_iframe
+        self.video_only = broadcast.video_only
 
 
 def get_broadcast(event, date):
+    now = datetime.now()
+    if (now.date() < date):
+        return None
+
     broadcast = __get_or_create_broadcast(event, date)
 
-    broadcast_item = BroadcastItem()
-
-    broadcast_item.event_name = event.name
-    broadcast_item.location_name = event.location.name
-    broadcast_item.liturgy_name = event.liturgy.name
-
-    # TODO check event time and date to set enabled and live
-
-    broadcast_item.has_text = bool(broadcast.text_url)
-    broadcast_item.text_url = broadcast.text_url
-    broadcast_item.text_iframe = broadcast.text_iframe
-
-    broadcast_item.video_url = broadcast.video_url
-    broadcast_item.video_iframe = broadcast.video_iframe
-    broadcast_item.video_only = broadcast.video_only
+    broadcast_item = BroadcastItem(event, broadcast)
 
     return broadcast_item
 

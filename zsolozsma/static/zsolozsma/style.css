@@ -115,7 +115,7 @@ a {
 /* COLOURS */
 
 a:hover {
-    color: #cc3300;
+    color: #66cc00;
 }
 
 .info {
@@ -124,6 +124,14 @@ a:hover {
 
 .warning {
     color: #ff6600;
+}
+
+.material-icons.disabled {
+    color: #ffffff4d;
+}
+
+.material-icons.live {
+    color: red;
 }
 
 /* fekete */
