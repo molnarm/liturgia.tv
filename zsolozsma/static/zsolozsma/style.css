@@ -33,6 +33,12 @@ nav span {
     width: 100%;
 }
 
+.info {
+    max-width: 960px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
 .schedule {
     margin: 50px 0;
 }
@@ -112,22 +118,30 @@ a {
     padding: 3px;
 }
 
-/* COLOURS */
-
-a:hover {
-    color: #66cc00;
+.material-icons.small {
+    font-size: 24px;
+    padding: 0;
+    vertical-align: middle;
 }
 
-.info {
+.info ul, 
+.info p {
+    text-align: justify;
+}
+
+/* COLOURS */
+
+a:hover,
+.info a {
+    color: #55aa01;
+}
+
+.message.info {
     color: #3434ff;
 }
 
-.warning {
+.message.warning {
     color: #ff6600;
-}
-
-.material-icons.disabled {
-    color: #ffffff4d;
 }
 
 .material-icons.live {
@@ -142,4 +156,22 @@ body {
 
 a {
     color: white;
+}
+
+.material-icons.disabled {
+    color: #ffffff4d;
+}
+
+/* fehér */
+body {
+    background-color: white;
+    color: black;
+}
+
+a {
+    color: black;
+}
+
+.material-icons.disabled {
+    color: #00000042;
 }

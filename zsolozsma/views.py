@@ -17,7 +17,7 @@ def search(request):
 
 
 def info(request):
-    raise Http404("Info does not exist")
+    return render(request, 'zsolozsma/info.html')
 
 
 def location(request, location, date=None, event=None):
