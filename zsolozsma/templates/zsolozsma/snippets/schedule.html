@@ -1,29 +1,29 @@
 <div class="schedule">
-    <table>
+    <div class="table-container"  role="table" aria-label="Közvetítések">
     {% for item in schedule %}
-        <tr>
-            <td>
-                {{ item.date }}
-            </td>
-            <td>
+        <div class="flex-table row" role="rowgroup">
+            <div class="flex-row" role="cell">
+                {{ item.date | date:'F j.' }}
+            </div>
+            <div class="flex-row" role="cell">
                 {{ item.time }}
-            </td>
+            </div>
             {% if show_location %}
-            <td>
+            <div class="flex-row" role="cell">
                <a href="{% url 'location' item.event.location.slug %}">{{ item.event.location.name }}</a>
-            </td>
+            </div>
             {% endif %}
-            <td>
+            <div class="flex-row" role="cell">
                {{ item.event.name }}
-            </td>
-            <td>
+            </div>
+            <div class="flex-row" role="cell">
                 {% if item.enabled %}
                     <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons {% if item.live %}live{% endif %}">&#xe63a;</span></a>
                 {% else %}
                     <span class="material-icons disabled">&#xe63a;</span>
                 {% endif %}
-            </td>
-        </tr>
+            </div>
+        </div>
     {% endfor %}
-    </table>
+    </div>
 </div>

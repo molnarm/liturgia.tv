@@ -6,9 +6,13 @@ body, ul, li, div {
     border: 0;
 }
 
+div {
+    box-sizing: border-box;
+}
+
 nav {
     min-width: 60%;
-    margin: 20px auto;
+    margin: 10px auto;
 }
 
 nav li {
@@ -28,7 +32,7 @@ nav span {
 
 .content {
     position: absolute;
-    top: 90px; /* nav */
+    top: 70px; /* nav */
     bottom: 0;
     width: 100%;
 }
@@ -43,12 +47,23 @@ nav span {
     margin: 50px 0;
 }
 
-.schedule table {
+.table-container {
     margin: 0 auto;
+    max-width: 960px;
 }
 
-.schedule td {
-    width: 20%;
+.flex-table {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 20px 0;
+}
+
+.flex-row {
+  flex: 1;
+}
+
+.flex-row:nth-child(4) {
+    margin-left: auto;
 }
 
 .container {
@@ -86,15 +101,6 @@ iframe {
 
 .message span {
     vertical-align: middle;
-}
-
-@media only screen and (max-width: 600px){
-    nav li {
-        min-width: 100px;
-    }
-    nav .title {
-        display: none;
-    }
 }
 
 /* TEXT */
@@ -146,6 +152,24 @@ a:hover,
 
 .material-icons.live {
     color: red;
+}
+
+/* KICSI */
+@media only screen and (max-width: 600px){
+    body {
+        font-size: 18px;
+    }
+    nav li {
+        min-width: 100px;
+    }
+    nav .title {
+        display: none;
+    }
+    .flex-row {
+        flex: none;
+        width: 33.3%;
+        line-height: 36px;
+    }
 }
 
 /* fekete */
