@@ -13,7 +13,7 @@
         {% endif %}
     </div>
 {% else %}
-        {% include "zsolozsma/snippets/warning.html" with content='A videót csak egy új ablakban lehet megnyitni.' %}
+        {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_url %}
         <script type="text/javascript">
             window.open('{{ broadcast.video_url }}', '_blank', 'noopener');
         </script>
@@ -25,7 +25,7 @@
             <iframe src="{{ broadcast.text_url }}"></iframe>        
         </div>
     {% else %}
-        {% include "zsolozsma/snippets/warning.html" with content='A szöveget csak egy új ablakban lehet megnyitni.' %} 
+        {% include "zsolozsma/snippets/warning.html" with content='A szöveget nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.text_url %} 
         <script type="text/javascript">
             window.open('{{ broadcast.text_url }}', '_blank', 'noopener');
         </script>

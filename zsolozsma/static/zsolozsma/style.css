@@ -146,7 +146,8 @@ a:hover,
     color: #3434ff;
 }
 
-.message.warning {
+.message.warning,
+.message.warning a {
     color: #ff6600;
 }
 
