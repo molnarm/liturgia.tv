@@ -78,8 +78,10 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+postgres_ssl = os.getenv('POSTGRES_SSL') == 'True'
+
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config()
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=postgres_ssl)
 
 
 # Password validation

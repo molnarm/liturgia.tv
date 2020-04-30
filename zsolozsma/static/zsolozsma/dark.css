@@ -1,0 +1,12 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+a {
+    color: white;
+}
+
+.material-icons.disabled {
+    color: #ffffff4d;
+}

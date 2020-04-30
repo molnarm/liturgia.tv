@@ -30,6 +30,10 @@ nav span {
     line-height: 50px;
 }
 
+#theme-toggle { 
+    float: right;
+}
+
 .content {
     position: absolute;
     top: 70px; /* nav */
@@ -37,7 +41,7 @@ nav span {
     width: 100%;
 }
 
-.info {
+.information {
     max-width: 960px;
     margin: 50px auto;
     padding: 0 20px;
@@ -96,7 +100,7 @@ iframe {
 
 .message {
     width: 80%;
-    margin: 0 auto;
+    margin: 20px auto;
 }
 
 .message span {
@@ -130,15 +134,15 @@ a {
     vertical-align: middle;
 }
 
-.info ul, 
-.info p {
+.information ul, 
+.information p {
     text-align: justify;
 }
 
 /* COLOURS */
 
 a:hover,
-.info a {
+.information a {
     color: #55aa01;
 }
 
@@ -156,7 +160,7 @@ a:hover,
 }
 
 /* KICSI */
-@media only screen and (max-width: 600px){
+@media only screen and (max-width: 720px){
     body {
         font-size: 18px;
     }
@@ -166,37 +170,26 @@ a:hover,
     nav .title {
         display: none;
     }
+    .content {
+        display: flex;
+        flex-direction: column;
+    }
+    .container {
+        width: 100%;
+        height: auto;
+    }
+    .container.video {
+        flex: 1;
+    }
+    .container.video-16-9 {
+        flex: none;
+    }
+    .container.text {
+        flex: 1;
+    }
     .flex-row {
         flex: none;
         width: 33.3%;
         line-height: 36px;
     }
-}
-
-/* fekete */
-body {
-    background-color: black;
-    color: white;
-}
-
-a {
-    color: white;
-}
-
-.material-icons.disabled {
-    color: #ffffff4d;
-}
-
-/* fehér */
-body {
-    background-color: white;
-    color: black;
-}
-
-a {
-    color: black;
-}
-
-.material-icons.disabled {
-    color: #00000042;
 }

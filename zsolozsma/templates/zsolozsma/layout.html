@@ -3,12 +3,24 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ZsolozsMA - {% block title %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oxygen&display=swap" rel="stylesheet"> 
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'zsolozsma/style.css' %}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link id="css-dark" rel="stylesheet" type="text/css" href="{% static 'zsolozsma/dark.css' %}"/>
+    <link id="css-light" rel="stylesheet alternate" type="text/css" href="{% static 'zsolozsma/light.css' %}"/>
+    <script type="text/javascript">
+        function toggleThemes() {
+            toggleTheme(document.getElementById('css-dark'))
+            toggleTheme(document.getElementById('css-light'))
+        }
+        function toggleTheme(element) {
+            if(element.rel == 'stylesheet') element.rel = 'stylesheet alternate';
+            else element.rel = 'stylesheet';
+        }
+    </script>
 </head>
 
 <body>
