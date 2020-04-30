@@ -18,7 +18,7 @@
             </div>
             <div class="flex-row" role="cell">
                 {% if item.enabled %}
-                    <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons {% if item.live %}live{% endif %}">&#xe63a;</span></a>
+                    <a href="{% url 'broadcast' hash=item.event.hash date=item.date %}"><span class="material-icons {% if item.live %}live{% else %}highlight{% endif %}">&#xe63a;</span></a>
                 {% else %}
                     <span class="material-icons disabled">&#xe63a;</span>
                 {% endif %}

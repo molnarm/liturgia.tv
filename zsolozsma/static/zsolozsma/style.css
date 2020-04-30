@@ -41,7 +41,9 @@ nav span {
     width: 100%;
 }
 
-.information {
+.information,
+.search,
+.table-container {
     max-width: 960px;
     margin: 50px auto;
     padding: 0 20px;
@@ -49,11 +51,6 @@ nav span {
 
 .schedule {
     margin: 50px 0;
-}
-
-.table-container {
-    margin: 0 auto;
-    max-width: 960px;
 }
 
 .flex-table {
@@ -68,6 +65,12 @@ nav span {
 
 .flex-row:nth-child(4) {
     margin-left: auto;
+}
+
+.search li {
+    display: inline-block;
+    min-width: 20%;
+    margin: 0 10px;
 }
 
 .container {
@@ -141,9 +144,11 @@ a {
 
 /* COLOURS */
 
+a,
 a:hover,
-.information a {
-    color: #55aa01;
+.material-icons.highlight
+ {
+    color: #b58f04;
 }
 
 .message.info {

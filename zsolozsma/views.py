@@ -13,7 +13,10 @@ def home(request):
 
 
 def search(request):
-    raise Http404("Search does not exist")
+    locations = models.Location.objects.all().order_by('name').values_list('name', 'slug')
+    liturgies = models.Liturgy.objects.all().order_by('name').values_list('name', 'slug')
+
+    return render(request, 'zsolozsma/search.html', { 'locations': locations, 'liturgies': liturgies })
 
 
 def info(request):

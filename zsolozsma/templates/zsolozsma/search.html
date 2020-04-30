@@ -1,0 +1,21 @@
+{% extends "zsolozsma/layout.html" %}
+{% block title %}Közvetítések keresése{% endblock %}
+{% block content %}
+<div class="search">
+    <h1>Közvetítések keresése</h1>
+    
+    <h2>Helyszínek</h2>
+    <ul>
+    {% for location in locations %}
+    <li><a href="{% url 'location' location.1 %}">{{ location.0 }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h2>Szertartások</h2>
+    <ul>
+    {% for liturgy in liturgies %}
+    <li><a href="{% url 'liturgy' liturgy.1 %}">{{ liturgy.0 }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
