@@ -1,5 +1,7 @@
 <nav>
+    {% comment %}
     <a id="theme-toggle" href="#" onclick="javascript:toggleThemes()" title="Világos/sötét színek cseréje"><span class="material-icons">&#xe427;</span></a>
+    {% endcomment %}
     <ul>
         <li><a href="{% url 'home' %}"><span class="material-icons">&#xe88a;</span><span class="title">Kezdőlap</span></a></li>
         <li><a href="{% url 'search' %}"><span class="material-icons">&#xe8b6;</span><span class="title">Keresés</span></a></li>

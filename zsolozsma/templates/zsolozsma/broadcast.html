@@ -3,8 +3,10 @@
 {% block content %}
 
 {% if broadcast.video_iframe %}
-    <div class="container video {% if broadcast.video_only %}video-16-9 {% endif %}{% if not broadcast.has_text or not broadcast.text_iframe %}fullwidth{% endif %}">
-        <iframe src="{{ broadcast.video_url }}"></iframe>
+    <div class="container video {% if not broadcast.has_text or not broadcast.text_iframe %}fullwidth{% endif %}">
+        <div {% if broadcast.video_only %}class="video-16-9" {% endif %}>
+            <iframe src="{{ broadcast.video_url }}"></iframe>
+        </div>
     </div>
 {% else %}
         {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_url %}

@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'zsolozsma/style.css' %}"/>
     <link id="css-dark" rel="stylesheet" type="text/css" href="{% static 'zsolozsma/dark.css' %}"/>
     <link id="css-light" rel="stylesheet alternate" type="text/css" href="{% static 'zsolozsma/light.css' %}"/>
+    {% comment %}
     <script type="text/javascript">
         function toggleThemes() {
             toggleTheme(document.getElementById('css-dark'))
@@ -21,6 +22,7 @@
             else element.rel = 'stylesheet';
         }
     </script>
+    {% endcomment %}
 </head>
 
 <body>
