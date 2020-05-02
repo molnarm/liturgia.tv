@@ -1,33 +1,39 @@
 {% extends "zsolozsma/layout.html" %}
+{% block bodyclass %}broadcast-page{% endblock %}
 {% block title %}{{ broadcast.event_name }} - {{ broadcast.location_name }}{% endblock %}
 {% block content %}
 
-{% if broadcast.video_iframe %}
-    <div class="container video {% if not broadcast.has_text or not broadcast.text_iframe %}fullwidth{% endif %}">
-        <div {% if broadcast.video_only %}class="video-16-9" {% endif %}>
-            <iframe src="{{ broadcast.video_url }}"></iframe>
-        </div>
+<div class="broadcast 
+    {% if broadcast.video_iframe %} with-video{% else %} no-video{%endif%}
+    {% if broadcast.video_only %} video-16-9{% endif %}
+    {% if broadcast.has_text and broadcast.text_iframe %} with-text{% else %} no-text{% endif %}
+">
+    <div class="video">
+        {% if broadcast.video_iframe %}
+            <div class="video-wrapper">
+                <iframe src="{{ broadcast.video_url }}"></iframe>
+            </div>
+        {% else %}
+            {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_url %}
+            <script type="text/javascript">
+                window.open('{{ broadcast.video_url }}', '_blank', 'noopener');
+            </script>
+        {% endif %}
     </div>
-{% else %}
-        {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_url %}
-        <script type="text/javascript">
-            window.open('{{ broadcast.video_url }}', '_blank', 'noopener');
-        </script>
-{% endif %}
-
-{% if broadcast.has_text %}
-    {% if broadcast.text_iframe %}
-        <div class="container text {% if not broadcast.video_iframe %}fullwidth{% endif %}">
-            <iframe src="{{ broadcast.text_url }}"></iframe>        
-        </div>
-    {% else %}
-        {% include "zsolozsma/snippets/warning.html" with content='A szöveget nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.text_url %} 
-        <script type="text/javascript">
-            window.open('{{ broadcast.text_url }}', '_blank', 'noopener');
-        </script>
-    {% endif %}
-{% else %}
-    {% include "zsolozsma/snippets/info.html" with content='Ehhez a közvetítéshez nem elérhető szöveg/énekrend.' %} 
-{% endif %}
+    <div class="text">
+        {% if broadcast.has_text %}
+            {% if broadcast.text_iframe %}
+                <iframe src="{{ broadcast.text_url }}"></iframe>
+            {% else %}
+                {% include "zsolozsma/snippets/warning.html" with content='A szöveget nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.text_url %} 
+                <script type="text/javascript">
+                    window.open('{{ broadcast.text_url }}', '_blank', 'noopener');
+                </script>
+            {% endif %}
+        {% else %}
+            {% include "zsolozsma/snippets/info.html" with content='Ehhez a közvetítéshez nem elérhető szöveg/énekrend.' %} 
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}

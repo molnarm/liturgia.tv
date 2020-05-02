@@ -34,11 +34,15 @@ nav span {
     float: right;
 }
 
-.content {
-    position: absolute;
-    top: 70px; /* nav */
-    bottom: 0;
-    width: 100%;
+.message {
+    width: 80%;
+    min-height: 50px;
+    margin: 10px auto;
+}
+
+.message span {
+    vertical-align: middle;
+    line-height: 50px;
 }
 
 .information,
@@ -73,14 +77,65 @@ nav span {
     margin: 0 10px;
 }
 
-.container {
+/* BROADCAST */
+
+.broadcast {
+    position: absolute;
+    top: 70px;
+    bottom: 0px;
+    width: 100%;
+}
+
+.video-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+/* no video, no text */
+.no-video .video,
+.no-text .text {
+    height: 70px; /* message */
+    width: 100%;
+}
+
+/* video, no text */
+.with-video.no-text .video
+{
+    position: absolute;
+    top: 0;
+    bottom: 70px;
+    height: auto;
+    width: 100%;
+}
+.with-video.no-text .text{
+    position: absolute;
+    bottom: 0;
+}
+
+.with-video.video-16-9.no-text .video
+{
+    position: relative;
+}
+.with-video.video-16-9.no-text .text{
+    position: relative;
+}
+
+/* text, no video */
+.broadcast.no-video.with-text {
+    display: flex;
+    flex-direction: column;
+}
+.no-video.with-text .text {
+    flex: 1;
+}
+
+/* video and text */
+.with-video.with-text .video,
+.with-video.with-text .text {
+    position: relative;
     width: 50%;
     height: 100%;
     float: left;
-}
-
-.fullwidth {
-    width: 100%;
 }
 
 iframe {
@@ -89,25 +144,16 @@ iframe {
     border: 0;
 }
 
-.video-16-9 {
+.video-16-9 .video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
     height: 0;
 }
 
-.video-16-9 iframe {
+.video-16-9 .video iframe {
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.message {
-    width: 80%;
-    margin: 20px auto;
-}
-
-.message span {
-    vertical-align: middle;
 }
 
 /* TEXT */
@@ -165,6 +211,27 @@ a:hover,
 }
 
 /* KICSI */
+@media only screen and (max-width: 1280px){
+    .broadcast {
+        display: flex;
+        flex-direction: column;
+    }
+    .video, 
+    .text {
+        width: 100% !important;
+        height: auto !important;
+    }
+    .video {
+        flex: 1;
+    }
+    .video-16-9 .video{
+        flex: none;
+    }
+    .text {
+        flex: 1;
+    }
+}
+/* MOBIL */
 @media only screen and (max-width: 720px){
     body {
         font-size: 18px;
@@ -174,23 +241,6 @@ a:hover,
     }
     nav .title {
         display: none;
-    }
-    .content {
-        display: flex;
-        flex-direction: column;
-    }
-    .container {
-        width: 100%;
-        height: auto;
-    }
-    .container.video {
-        flex: 1;
-    }
-    .container.video-16-9 {
-        flex: none;
-    }
-    .container.text {
-        flex: 1;
     }
     .flex-row {
         flex: none;

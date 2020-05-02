@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import urllib.request
 
 SCHEDULE_FUTURE_DAYS = 7
+TIMEDELTA_TOLERANCE = 15
 
 
 class ScheduleItem(object):
@@ -70,8 +71,6 @@ def get_schedule(
 
 # (enabled, live)
 def get_broadcast_status(event, date):
-    TIMEDELTA_TOLERANCE = 15
-
     now = datetime.now()
     if (now.date() < date):
         return (False, False)
