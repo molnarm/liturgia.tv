@@ -1,4 +1,5 @@
 események egyedi dátummal
 eseményekhez egyedi youtube-csatorna (PH esti ima)
 közvetítés header
+event.slug nem kell
 db query ellenőrzés
