@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 from zsolozsma import models, youtube
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.request
+import os
 
-SCHEDULE_FUTURE_DAYS = 7
-TIMEDELTA_TOLERANCE = 15
+SCHEDULE_FUTURE_DAYS = os.getenv('SCHEDULE_FUTURE_DAYS', 3)
+TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 
 class ScheduleItem(object):
@@ -15,13 +16,14 @@ class ScheduleItem(object):
 
     enabled = False
     live = False
+    shown = False
 
     def __init__(self, event,  date, time):
         self.event = event
         self.date = date
         self.time = time
 
-        (self.enabled, self.live) = get_broadcast_status(event, date)
+        (self.enabled, self.live, self.shown) = get_broadcast_status(event, date)
 
 
 def get_schedule(
@@ -61,19 +63,19 @@ def get_schedule(
 
     schedule = list()
     for (_date, _day) in dates:
-        schedule.extend([ScheduleItem(event, _date, event.time)
-                         for event in events if event.day_of_week == _day])
+        schedule.extend([i for i in [ScheduleItem(event, _date, event.time)
+                         for event in events if event.day_of_week == _day] if i.shown])
 
     schedule.sort(key=attrgetter('date', 'time'))
 
     return schedule
 
 
-# (enabled, live)
+# (enabled, live, shown)
 def get_broadcast_status(event, date):
     now = datetime.now()
     if (now.date() < date):
-        return (False, False)
+        return (False, False, True)
 
     event_time = datetime.combine(date, event.time)
     difference = now - event_time
@@ -82,15 +84,15 @@ def get_broadcast_status(event, date):
     duration = event.duration or 60
 
     if (minutes < - TIMEDELTA_TOLERANCE):
-        return (False, False)  # még több, mint 15 perc a kezdésig
+        return (False, False, True)  # még több, mint 15 perc a kezdésig
     elif (minutes < 0):
-        return (True, False)  # 15 percen belül kezdődik
+        return (True, False, True)  # 15 percen belül kezdődik
     elif (minutes < duration):
-        return (True, True)   # éppen tart
+        return (True, True, True)   # éppen tart
     elif (minutes < duration + TIMEDELTA_TOLERANCE):
-        return (True, False)  # 15 percen belül ért véget
+        return (True, False, True)  # 15 percen belül ért véget
     else:
-        return (False, False)
+        return (False, False, False)
 
 
 class BroadcastItem(object):
