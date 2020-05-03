@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django.utils.text import slugify
 import secrets

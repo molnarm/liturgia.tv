@@ -1,5 +1,6 @@
 from operator import attrgetter
 from datetime import datetime, timedelta
+from django.utils import timezone
 from zsolozsma import models, youtube
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.request
@@ -41,7 +42,7 @@ def get_schedule(
         dates = [(date, weekday)]
         events = events.filter(day_of_week=weekday)
     else:
-        today = datetime.today().date()
+        today = timezone.localtime().date()
 
         dates = [(date, date.weekday())
                  for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
@@ -64,7 +65,7 @@ def get_schedule(
     schedule = list()
     for (_date, _day) in dates:
         schedule.extend([i for i in [ScheduleItem(event, _date, event.time)
-                         for event in events if event.day_of_week == _day] if i.shown])
+                                     for event in events if event.day_of_week == _day] if i.shown])
 
     schedule.sort(key=attrgetter('date', 'time'))
 
@@ -73,11 +74,11 @@ def get_schedule(
 
 # (enabled, live, shown)
 def get_broadcast_status(event, date):
-    now = datetime.now()
+    now = timezone.localtime()
     if (now.date() < date):
         return (False, False, True)
 
-    event_time = datetime.combine(date, event.time)
+    event_time = timezone.get_current_timezone().localize(datetime.combine(date, event.time))
     difference = now - event_time
     minutes = difference.total_seconds() / 60
 
@@ -111,7 +112,7 @@ class BroadcastItem(object):
 
 
 def get_broadcast(event, date):
-    now = datetime.now()
+    now = timezone.localtime()
     if (now.date() < date):
         return None
 
