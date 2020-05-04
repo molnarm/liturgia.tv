@@ -1,4 +1,4 @@
 események egyedi dátummal
-eseményekhez egyedi youtube-csatorna (PH esti ima)
 közvetítés header
 db query ellenőrzés
+heroku staging app

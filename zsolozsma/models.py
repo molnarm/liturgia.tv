@@ -74,6 +74,8 @@ class Event(models.Model):
         "Liturgy", verbose_name='Szertartás', on_delete=models.CASCADE, blank=False)
     duration = models.IntegerField('Időtartam (perc)', blank=True, null=True)
 
+    youtube_channel = models.CharField(
+        'Egyedi YouTube csatorna ID', max_length=24, blank=True)
     video_url = models.URLField(
         'Egyedi URL a közvetítéshez', max_length=500, blank=True)
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)

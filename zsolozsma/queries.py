@@ -131,10 +131,13 @@ def __get_or_create_broadcast(event, date):
     if(not broadcast.video_url):
         video_url = None
 
-        if(event.video_url):
+        if(event.youtube_channel):
+            video_url = youtube.get_video(event.youtube_channel)
+            broadcast.video_only = True
+        elif(event.video_url):
             video_url = event.video_url
         elif(event.location.youtube_channel):
-            video_url = youtube.get_video(event)
+            video_url = youtube.get_video(event.location.youtube_channel)
             broadcast.video_only = True
         else:
             video_url = event.location.video_url
