@@ -78,13 +78,10 @@ class Event(models.Model):
         'Egyedi URL a közvetítéshez', max_length=500, blank=True)
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
 
-    slug = models.SlugField('URL részlet', max_length=100, blank=False)
     hash = models.CharField('URL hash', max_length=8,
                             blank=False, null=False, unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-
         if(self.pk is None):
             self.hash = secrets.token_hex(4)
 

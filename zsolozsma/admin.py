@@ -4,7 +4,7 @@ import zsolozsma.models
 
 class EventInline(admin.TabularInline):
     model = zsolozsma.models.Event
-    readonly_fields = ('slug', 'hash',)
+    readonly_fields = ('hash',)
 
 
 @admin.register(zsolozsma.models.Location)

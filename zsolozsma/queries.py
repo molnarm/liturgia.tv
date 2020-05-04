@@ -33,8 +33,7 @@ def get_schedule(
         date=None,
         liturgy=None,
         liturgy_slug=None,
-        event=None,
-        event_slug=None):
+        event=None):
     events = models.Event.objects.select_related('location').all()
 
     if(date):
@@ -59,8 +58,6 @@ def get_schedule(
 
     if(event):
         events = [event]
-    elif(event_slug):
-        events = events.filter(slug=event_slug)
 
     schedule = list()
     for (_date, _day) in dates:
