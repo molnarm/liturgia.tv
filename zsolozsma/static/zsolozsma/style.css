@@ -10,22 +10,22 @@ div {
     box-sizing: border-box;
 }
 
-nav {
+.nav {
     min-width: 60%;
     margin: 10px auto;
 }
 
-nav li {
+.nav li {
     display: inline-block;
     min-width: 200px;
 }
 
-nav a {
-    display: block;
+.nav a {
+    display: inline-block;
     height: 50px;
 }
 
-nav span {
+.nav a span {
     vertical-align: middle;
     line-height: 50px;
 }
@@ -192,6 +192,7 @@ a {
 
 a,
 a:hover,
+.nav a:hover,
 .material-icons.highlight
  {
     color: #b58f04;
@@ -236,10 +237,10 @@ a:hover,
     body {
         font-size: 18px;
     }
-    nav li {
+    .nav li {
         min-width: 100px;
     }
-    nav .title {
+    .nav .title {
         display: none;
     }
     .flex-row {
