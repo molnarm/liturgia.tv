@@ -46,10 +46,10 @@ def liturgy(request, liturgy, date=None):
 
 
 def broadcast(request, hash, date):
-    event_object = get_object_or_404(models.Event, hash=hash)
+    schedule_object = get_object_or_404(models.EventSchedule, hash=hash)
     date = datetime.strptime(date, '%Y-%m-%d').date()
 
-    broadcast = queries.get_broadcast(event_object, date)
+    broadcast = queries.get_broadcast(schedule_object, date)
 
     if(broadcast):
         return render(request, 'zsolozsma/broadcast.html', {'broadcast': broadcast})

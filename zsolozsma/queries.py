@@ -12,6 +12,7 @@ TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 class ScheduleItem(object):
     event = None
+    schedule = None
     date = None
     time = None
 
@@ -19,12 +20,13 @@ class ScheduleItem(object):
     live = False
     shown = False
 
-    def __init__(self, event,  date, time):
-        self.event = event
+    def __init__(self, schedule, date, time):
+        self.schedule = schedule
+        self.event = schedule.event
         self.date = date
         self.time = time
 
-        (self.enabled, self.live, self.shown) = get_broadcast_status(event, date)
+        (self.enabled, self.live, self.shown) = get_broadcast_status(schedule, date)
 
 
 def get_schedule(
@@ -34,12 +36,13 @@ def get_schedule(
         liturgy=None,
         liturgy_slug=None,
         event=None):
-    events = models.Event.objects.select_related('location').all()
+    scheduleQuery = models.EventSchedule.objects.select_related(
+        'event', 'event__location').all()
 
     if(date):
         weekday = date.weekday()
         dates = [(date, weekday)]
-        events = events.filter(day_of_week=weekday)
+        scheduleQuery = scheduleQuery.filter(day_of_week=weekday)
     else:
         today = timezone.localtime().date()
 
@@ -47,22 +50,22 @@ def get_schedule(
                  for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
     if (location):
-        events = events.filter(location=location)
+        scheduleQuery = scheduleQuery.filter(event__location=location)
     elif(location_slug):
-        events = events.filter(location_slug=location_slug)
+        scheduleQuery = scheduleQuery.filter(event__location_slug=location_slug)
 
     if(liturgy):
-        events = events.filter(liturgy=liturgy)
+        scheduleQuery = scheduleQuery.filter(event__liturgy=liturgy)
     elif(liturgy_slug):
-        events = events.filter(liturgy_slug=liturgy_slug)
+        scheduleQuery = scheduleQuery.filter(event__liturgy_slug=liturgy_slug)
 
     if(event):
-        events = [event]
+        scheduleQuery = scheduleQuery.filter(event=event)
 
     schedule = list()
     for (_date, _day) in dates:
-        schedule.extend([i for i in [ScheduleItem(event, _date, event.time)
-                                     for event in events if event.day_of_week == _day] if i.shown])
+        schedule.extend([i for i in [ScheduleItem(item, _date, item.time)
+                                     for item in scheduleQuery if item.day_of_week == _day] if i.shown])
 
     schedule.sort(key=attrgetter('date', 'time'))
 
@@ -70,16 +73,17 @@ def get_schedule(
 
 
 # (enabled, live, shown)
-def get_broadcast_status(event, date):
+def get_broadcast_status(schedule, date):
     now = timezone.localtime()
     if (now.date() < date):
         return (False, False, True)
 
-    event_time = timezone.get_current_timezone().localize(datetime.combine(date, event.time))
+    event_time = timezone.get_current_timezone().localize(
+        datetime.combine(date, schedule.time))
     difference = now - event_time
     minutes = difference.total_seconds() / 60
 
-    duration = event.duration or 60
+    duration = schedule.event.duration or 60
 
     if (minutes < - TIMEDELTA_TOLERANCE):
         return (False, False, True)  # még több, mint 15 perc a kezdésig
@@ -108,19 +112,21 @@ class BroadcastItem(object):
         self.video_only = broadcast.video_only
 
 
-def get_broadcast(event, date):
+def get_broadcast(schedule, date):
     now = timezone.localtime()
     if (now.date() < date):
         return None
 
-    broadcast = __get_or_create_broadcast(event, date)
+    broadcast = __get_or_create_broadcast(schedule, date)
 
-    broadcast_item = BroadcastItem(event, broadcast)
+    broadcast_item = BroadcastItem(schedule.event, broadcast)
 
     return broadcast_item
 
 
-def __get_or_create_broadcast(event, date):
+def __get_or_create_broadcast(schedule, date):
+    event = schedule.event
+
     try:
         broadcast = models.Broadcast.objects.get(event=event, date=date)
     except ObjectDoesNotExist:
@@ -131,9 +137,14 @@ def __get_or_create_broadcast(event, date):
     if(not broadcast.video_url):
         video_url = None
 
-        if(event.youtube_channel):
+        if(schedule.youtube_channel):
+            video_url = youtube.get_video(schedule.youtube_channel)
+            broadcast.video_only = True
+        elif(event.youtube_channel):
             video_url = youtube.get_video(event.youtube_channel)
             broadcast.video_only = True
+        elif(schedule.video_url):
+            video_url = event.video_url
         elif(event.video_url):
             video_url = event.video_url
         elif(event.location.youtube_channel):
@@ -149,7 +160,9 @@ def __get_or_create_broadcast(event, date):
 
     if (not broadcast.text_url):
         text_url = None
-        if(event.text_url):
+        if(schedule.text_url):
+            text_url = schedule.text_url
+        elif(event.text_url):
             text_url = event.text_url
         else:
             try:

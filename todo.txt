@@ -1,4 +1,3 @@
 események egyedi dátummal
-közvetítés header
 db query ellenőrzés
 heroku staging app

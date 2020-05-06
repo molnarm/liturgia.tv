@@ -51,7 +51,34 @@ class Liturgy(models.Model):
 
 
 class Event(models.Model):
-    """Közvetített esemény (adott szertartás egy adott helyen, adott időpontban)"""
+    """Közvetített esemény (adott szertartás egy adott helyen)"""
+
+    name = models.CharField('Név', max_length=100, blank=False)
+    location = models.ForeignKey(
+        "Location", verbose_name='Helyszín', on_delete=models.CASCADE, blank=False)
+    liturgy = models.ForeignKey(
+        "Liturgy", verbose_name='Szertartás', on_delete=models.CASCADE, blank=False)
+    duration = models.IntegerField('Időtartam (perc)', blank=True, null=True)
+
+    youtube_channel = models.CharField(
+        'Egyedi YouTube csatorna ID', max_length=24, blank=True)
+    video_url = models.URLField(
+        'Egyedi URL a közvetítéshez', max_length=500, blank=True)
+    text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
+
+    def __str__(self):
+        return "%s %s" % (self.name, self.location.name)
+
+    class Meta:
+        verbose_name = 'Esemény'
+        verbose_name_plural = 'Események'
+
+
+class EventSchedule(models.Model):
+    event = models.ForeignKey(
+        "Event", verbose_name="Esemény", on_delete=models.CASCADE)
+
+    hash = models.CharField('URL hash', max_length=8, unique=True, null=True)
 
     class Weekdays(models.IntegerChoices):
         hétfő = 0,
@@ -67,36 +94,26 @@ class Event(models.Model):
     time = models.TimeField('Kezdés ideje', auto_now=False,
                             auto_now_add=False, null=True, blank=True)
 
-    name = models.CharField('Név', max_length=100, blank=False)
-    location = models.ForeignKey(
-        "Location", verbose_name='Helyszín', on_delete=models.CASCADE, blank=False)
-    liturgy = models.ForeignKey(
-        "Liturgy", verbose_name='Szertartás', on_delete=models.CASCADE, blank=False)
-    duration = models.IntegerField('Időtartam (perc)', blank=True, null=True)
-
     youtube_channel = models.CharField(
         'Egyedi YouTube csatorna ID', max_length=24, blank=True)
     video_url = models.URLField(
         'Egyedi URL a közvetítéshez', max_length=500, blank=True)
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
 
-    hash = models.CharField('URL hash', max_length=8,
-                            blank=False, null=False, unique=True)
+    def __str__(self):
+        date_str = EventSchedule.Weekdays(self.day_of_week).name
+
+        return "%s (%s %s)" % (self.event.name, date_str, self.time)
 
     def save(self, *args, **kwargs):
-        if(self.pk is None):
+        if(self.pk is None or self.hash is None):
             self.hash = secrets.token_hex(4)
 
-        super(Event, self).save(*args, **kwargs)
-
-    def __str__(self):
-        date_str = Event.Weekdays(self.day_of_week).name
-
-        return "%s (%s %s)" % (self.name, date_str, self.time)
+        super(EventSchedule, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = 'Esemény'
-        verbose_name_plural = 'Események'
+        verbose_name = 'Esemény időpont'
+        verbose_name_plural = 'Esemény időpontok'
 
 
 class LiturgyText(models.Model):
@@ -114,8 +131,8 @@ class LiturgyText(models.Model):
 
 
 class Broadcast(models.Model):
-    event = models.ForeignKey(
-        "Event", verbose_name='Esemény', on_delete=models.CASCADE, blank=False)
+    schedule = models.ForeignKey(
+        "EventSchedule", verbose_name='Esemény időpont', null=True, on_delete=models.CASCADE)
     date = models.DateField('Dátum', auto_now=False,
                             auto_now_add=False, blank=False)
     video_url = models.URLField('Videó URL', max_length=500, blank=False)
@@ -132,4 +149,5 @@ class Broadcast(models.Model):
         verbose_name_plural = 'Közvetítések'
 
     def __str__(self):
-        return "%s %s %s %s" % (self.event.location.name, self.event.name, self.date, self.event.time)
+        event = self.schedule.event
+        return "%s %s %s %s" % (event.location.name, event.name, self.date, self.schedule.time)

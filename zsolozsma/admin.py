@@ -2,9 +2,19 @@ from django.contrib import admin
 import zsolozsma.models
 
 
+class EventScheduleInline(admin.TabularInline):
+    model = zsolozsma.models.EventSchedule
+    readonly_fields = ('hash',)
+
+
+@admin.register(zsolozsma.models.Event)
+class EventAdmin(admin.ModelAdmin):
+    model = zsolozsma.models.Event
+    inlines = [EventScheduleInline, ]
+
+
 class EventInline(admin.TabularInline):
     model = zsolozsma.models.Event
-    readonly_fields = ('hash',)
 
 
 @admin.register(zsolozsma.models.Location)
