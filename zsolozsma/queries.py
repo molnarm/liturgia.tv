@@ -128,10 +128,10 @@ def __get_or_create_broadcast(schedule, date):
     event = schedule.event
 
     try:
-        broadcast = models.Broadcast.objects.get(event=event, date=date)
+        broadcast = models.Broadcast.objects.get(schedule=schedule, date=date)
     except ObjectDoesNotExist:
         broadcast = models.Broadcast()
-        broadcast.event = event
+        broadcast.schedule = schedule
         broadcast.date = date
 
     if(not broadcast.video_url):
