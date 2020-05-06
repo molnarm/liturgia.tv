@@ -21,7 +21,6 @@ def copy_schedule(apps, schema_editor):
             key_event = events_dict[key]
             event.delete()
         else:
-            event.duration = schedule.duration
             event.save()
 
             key_event = event
