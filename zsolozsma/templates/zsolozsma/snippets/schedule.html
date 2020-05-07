@@ -10,11 +10,11 @@
             </div>
             {% if show_location %}
             <div class="flex-row" role="cell">
-               <a href="{% url 'location' item.event.location.slug %}">{{ item.event.location.name }}</a>
+               <a href="{% url 'location' item.location.slug %}">{{ item.location.name }}</a>
             </div>
             {% endif %}
             <div class="flex-row" role="cell">
-               {{ item.event.name }}
+               {{ item.name }}
             </div>
             <div class="flex-row" role="cell">
                 {% if item.enabled %}

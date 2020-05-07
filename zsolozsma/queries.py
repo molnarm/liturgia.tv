@@ -11,7 +11,8 @@ TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 
 class ScheduleItem(object):
-    event = None
+    location = None
+    name = None
     schedule = None
     date = None
     time = None
@@ -22,7 +23,8 @@ class ScheduleItem(object):
 
     def __init__(self, schedule, date, time):
         self.schedule = schedule
-        self.event = schedule.event
+        self.name = schedule.event.name
+        self.location = schedule.event.location
         self.date = date
         self.time = time
 
@@ -67,7 +69,7 @@ def get_schedule(
         schedule.extend([i for i in [ScheduleItem(item, _date, item.time)
                                      for item in scheduleQuery if item.day_of_week == _day] if i.shown])
 
-    schedule.sort(key=attrgetter('date', 'time', 'event.name'))
+    schedule.sort(key=attrgetter('date', 'time', 'name'))
 
     return schedule
 
