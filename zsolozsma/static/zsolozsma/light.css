@@ -10,3 +10,7 @@ body {
 .material-icons.disabled {
     color: #00000042;
 }
+
+.row.new-day {
+    border-top: 1px solid #00000042;
+}

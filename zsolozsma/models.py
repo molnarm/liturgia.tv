@@ -67,7 +67,7 @@ class Event(models.Model):
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
 
     def __str__(self):
-        return "%s %s" % (self.name, self.location.name)
+        return "%s %s" % (self.location.name, self.name)
 
     class Meta:
         verbose_name = 'Esemény'

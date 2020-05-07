@@ -11,6 +11,7 @@ class EventScheduleInline(admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     model = zsolozsma.models.Event
     inlines = [EventScheduleInline, ]
+    ordering = ['location', 'liturgy']
 
 
 class EventInline(admin.TabularInline):
@@ -21,6 +22,7 @@ class EventInline(admin.TabularInline):
 class LocationAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
     inlines = [EventInline, ]
+    ordering = ['name']
 
 
 class LiturgyTextInline(admin.TabularInline):
@@ -31,6 +33,7 @@ class LiturgyTextInline(admin.TabularInline):
 class LiturgyAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
     inlines = [LiturgyTextInline, ]
+    ordering = ['name']
 
 
 @admin.register(zsolozsma.models.Broadcast)

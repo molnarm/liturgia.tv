@@ -1,7 +1,7 @@
 <div class="schedule">
     <div class="table-container"  role="table" aria-label="Közvetítések">
     {% for item in schedule %}
-        <div class="flex-table row" role="rowgroup">
+        <div class="flex-table row {% ifchanged item.date %}new-day{% endifchanged %}" role="rowgroup">
             <div class="flex-row" role="cell">
                 {{ item.date | date:'F j.' }}
             </div>

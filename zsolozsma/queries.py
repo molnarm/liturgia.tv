@@ -67,7 +67,7 @@ def get_schedule(
         schedule.extend([i for i in [ScheduleItem(item, _date, item.time)
                                      for item in scheduleQuery if item.day_of_week == _day] if i.shown])
 
-    schedule.sort(key=attrgetter('date', 'time'))
+    schedule.sort(key=attrgetter('date', 'time', 'event.name'))
 
     return schedule
 

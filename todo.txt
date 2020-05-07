@@ -1,3 +1,2 @@
 események egyedi dátummal
 db query ellenőrzés
-heroku staging app
