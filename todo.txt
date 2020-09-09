@@ -1,2 +1,3 @@
 események egyedi dátummal
+egyedi esemény időtartam
 db query ellenőrzés

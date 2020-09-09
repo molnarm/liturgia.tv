@@ -39,7 +39,7 @@ def get_schedule(
         liturgy_slug=None,
         event=None):
     scheduleQuery = models.EventSchedule.objects.select_related(
-        'event', 'event__location').all()
+        'event', 'event__location').filter(event__is_active=True, event__location__is_active=True)
 
     if(date):
         weekday = date.weekday()

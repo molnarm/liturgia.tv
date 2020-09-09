@@ -17,6 +17,7 @@ class Location(models.Model):
         'YouTube csatorna ID', max_length=24, blank=True)
     video_url = models.URLField(
         'URL a közvetítéshez', max_length=500, blank=True)
+    is_active = models.BooleanField('Aktív', blank=False, default=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -65,6 +66,8 @@ class Event(models.Model):
     video_url = models.URLField(
         'Egyedi URL a közvetítéshez', max_length=500, blank=True)
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
+
+    is_active = models.BooleanField('Aktív', blank=False, default=True)
 
     def __str__(self):
         return "%s %s" % (self.location.name, self.name)
