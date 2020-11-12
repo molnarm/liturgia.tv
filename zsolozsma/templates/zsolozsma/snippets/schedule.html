@@ -1,31 +1,41 @@
 <div class="schedule">
-    <div class="table-container"  role="table" aria-label="Közvetítések">
-    {% for item in schedule %}
+    <div class="table-container" role="table" aria-label="Közvetítések">
+        {% for item in schedule %}
+        {% ifchanged item.date %}
+        <div class="flex-table row" role="rowgroup">
+            {{ item.date | date:'F j.' }}
+        </div>
+        {% endifchanged %}
         <div class="flex-table row {% ifchanged item.date %}new-day{% endifchanged %}" role="rowgroup">
-            <div class="flex-row" role="cell">
-                {{ item.date | date:'F j.' }}
-            </div>
             <div class="flex-row" role="cell">
                 {{ item.time }}
             </div>
+            {%if show_city %}
+            <div class="flex-row" role="cell">
+                {% if item.location.city %}
+                <a href="{% url 'city' item.location.city.slug %}">{{ item.location.city.name }}</a>
+                {% endif %}
+            </div>
+            {% endif %}
             {% if show_location %}
             <div class="flex-row" role="cell">
-               <a href="{% url 'location' item.location.slug %}">{{ item.location.name }}</a>
+                <a href="{% url 'location' item.location.slug %}">{{ item.location.name }}</a>
             </div>
             {% endif %}
             <div class="flex-row" role="cell">
-               {{ item.name }}
+                {{ item.name }}
             </div>
             <div class="flex-row" role="cell">
                 {% if item.enabled %}
-                    <a href="{% url 'broadcast' hash=item.schedule.hash date=item.date %}"><span class="material-icons {% if item.live %}live{% else %}highlight{% endif %}">&#xe63a;</span></a>
+                <a href="{% url 'broadcast' hash=item.schedule.hash date=item.date %}"><span
+                        class="material-icons {% if item.live %}live{% else %}highlight{% endif %}">&#xe63a;</span></a>
                 {% else %}
-                    <span class="material-icons disabled">&#xe63a;</span>
+                <span class="material-icons disabled">&#xe63a;</span>
                 {% endif %}
             </div>
         </div>
-    {% empty %}
+        {% empty %}
         Nincs ilyen elérhető közvetítés a közeljövőben.
-    {% endfor %}
+        {% endfor %}
     </div>
 </div>

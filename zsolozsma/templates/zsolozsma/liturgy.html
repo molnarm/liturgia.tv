@@ -5,5 +5,5 @@
     <h1>{{ liturgy.name }}</h1>
     <p>{{ liturgy.description }}</p>
 </div>
-{% include 'zsolozsma/snippets/schedule.html' with show_location=True %}
+{% include 'zsolozsma/snippets/schedule.html' with show_city=True show_location=True %}
 {% endblock %}

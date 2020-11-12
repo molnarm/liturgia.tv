@@ -1,8 +1,8 @@
 {% extends "zsolozsma/layout.html" %}
-{% block title %}Kezdőlap{% endblock %}
+{% block title %}{{ diocese.name }}{% endblock %}
 {% block content %}
-<h1>Közelgő közvetítések</h1>
-
+<div class="diocese">
+    <h1>{{ diocese.name }}</h1>
+</div>
 {% include 'zsolozsma/snippets/schedule.html' with show_city=True show_location=True %}
-
 {% endblock %}

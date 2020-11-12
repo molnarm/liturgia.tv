@@ -5,9 +5,18 @@
     <h1>Közvetítések keresése</h1>
     
     <h2>Helyszínek</h2>
-    <ul>
     {% for location in locations %}
-    <li><a href="{% url 'location' location.1 %}">{{ location.0 }}</a></li>
+        {% ifchanged location.1 %}
+            {% if not forloop.first %}</ul>{% endif %}
+        {% endifchanged %}
+        {% ifchanged location.0 %}
+            <h3>{{ location.0|default:"Egyházmegye nincs megadva" }}</h3>
+        {% endifchanged %}
+        {% ifchanged location.1 %}
+            <h4>{{ location.1|default:"Város nincs megadva" }}</h4>        
+            <ul>
+        {% endifchanged %}
+        <li><a href="{% url 'location' location.3 %}">{{ location.2 }}</a></li>
     {% endfor %}
     </ul>
 

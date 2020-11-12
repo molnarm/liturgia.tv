@@ -1,0 +1,8 @@
+{% extends "zsolozsma/layout.html" %}
+{% block title %}{{ city.name }}{% endblock %}
+{% block content %}
+<div class="city">
+    <h1>{{ city.name }}</h1>
+</div>
+{% include 'zsolozsma/snippets/schedule.html' with show_city=False show_location=True %}
+{% endblock %}

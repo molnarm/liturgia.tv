@@ -32,14 +32,15 @@ class ScheduleItem(object):
 
 
 def get_schedule(
-        location=None,
-        location_slug=None,
         date=None,
-        liturgy=None,
+        event=None,
+        location_slug=None,
         liturgy_slug=None,
-        event=None):
-    scheduleQuery = models.EventSchedule.objects.select_related(
-        'event', 'event__location').filter(event__is_active=True, event__location__is_active=True)
+        city_slug=None,
+        diocese_slug=None):
+    scheduleQuery = models.EventSchedule.objects\
+        .select_related('event', 'event__location', 'event__location__city', 'event__location__city__diocese')\
+        .filter(event__is_active=True, event__location__is_active=True)
 
     if(date):
         weekday = date.weekday()
@@ -51,15 +52,14 @@ def get_schedule(
         dates = [(date, date.weekday())
                  for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
-    if (location):
-        scheduleQuery = scheduleQuery.filter(event__location=location)
-    elif(location_slug):
-        scheduleQuery = scheduleQuery.filter(event__location_slug=location_slug)
-
-    if(liturgy):
-        scheduleQuery = scheduleQuery.filter(event__liturgy=liturgy)
-    elif(liturgy_slug):
-        scheduleQuery = scheduleQuery.filter(event__liturgy_slug=liturgy_slug)
+    if(location_slug):
+        scheduleQuery = scheduleQuery.filter(event__location__slug=location_slug)
+    if(liturgy_slug):
+        scheduleQuery = scheduleQuery.filter(event__liturgy__slug=liturgy_slug)
+    if(city_slug):
+        scheduleQuery = scheduleQuery.filter(event__location__city__slug=city_slug)
+    if(diocese_slug):
+        scheduleQuery = scheduleQuery.filter(event__location__city__diocese__slug=diocese_slug)
 
     if(event):
         scheduleQuery = scheduleQuery.filter(event=event)
