@@ -1,3 +1,5 @@
+egyházmegye és város szerinti csoportosítás
+felekezet/rítus szerinti csoportosítás?
 események egyedi dátummal
 egyedi esemény időtartam
 db query ellenőrzés
