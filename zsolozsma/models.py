@@ -56,12 +56,10 @@ class Location(models.Model):
     name = models.CharField('Rövid név', max_length=100, blank=False)
     fullname = models.CharField('Teljes név',
                                 max_length=300,
-                                blank=False,
-                                unique=True)
+                                blank=False)
     slug = models.SlugField('URL részlet',
                             max_length=50,
-                            blank=False,
-                            unique=True)
+                            blank=False)
     city = models.ForeignKey("City",
                              verbose_name='Település',
                              on_delete=models.CASCADE,
