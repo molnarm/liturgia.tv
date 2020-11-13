@@ -137,4 +137,4 @@ LOGGING = {
 }
 
 # Activate Django-Heroku.
-django_heroku.settings(locals(), logging=not DEBUG, databases=not DEBUG)
+django_heroku.settings(locals(), logging=False, databases=not DEBUG)
