@@ -16,7 +16,7 @@
             <h4>{{ location.1|default:"Város nincs megadva" }}</h4>        
             <ul>
         {% endifchanged %}
-        <li><a href="{% url 'location' location.3 %}">{{ location.2 }}</a></li>
+        <li><a href="{% url 'city-location' location.3 location.4 %}">{{ location.2 }}</a></li>
     {% endfor %}
     </ul>
 

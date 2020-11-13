@@ -14,9 +14,9 @@ def home(request):
 
 def search(request):
     locations = models.Location.objects.all()\
-        .select_related('city__name', 'city__diocese__name')\
+        .select_related('city__name', 'city__slug', 'city__diocese__name')\
         .order_by('city__diocese__name', 'city__name', 'name')\
-        .values_list('city__diocese__name', 'city__name', 'name', 'slug')
+        .values_list('city__diocese__name', 'city__name', 'name', 'city__slug', 'slug')
     liturgies = models.Liturgy.objects.all()\
         .order_by('name')\
         .values_list('name', 'slug')
@@ -28,12 +28,12 @@ def info(request):
     return render(request, 'zsolozsma/info.html')
 
 
-def location(request, location, date=None):
-    location_object = get_object_or_404(models.Location, slug=location)
+def location(request, city, location, date=None):
+    location_object = get_object_or_404(models.Location, city__slug=city, slug=location)
     if(date):
         date = datetime.strptime(date, '%Y-%m-%d').date()
 
-    schedule = queries.get_schedule(location_slug=location, date=date)
+    schedule = queries.get_schedule(city_slug=city, location_slug=location, date=date)
 
     return render(request, 'zsolozsma/location.html', {'location': location_object, 'schedule': schedule})
 

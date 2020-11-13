@@ -2,7 +2,7 @@
 {% block title %}{{ location.name }}{% endblock %}
 {% block content %}
 <div class="location">
-    <h1>{{ location.name }}</h1>
+    <h1>{{ location.city.name }}, {{ location.name }}</h1>
     <p>{{ location.fullname }}</p>
     {% if location.homepage %}
     <a href="{{ location.homepage }}">{{ location.homepage }}</a>

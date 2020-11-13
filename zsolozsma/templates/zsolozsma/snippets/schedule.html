@@ -3,7 +3,7 @@
         {% for item in schedule %}
         {% ifchanged item.date %}
         <div class="flex-table row" role="rowgroup">
-            {{ item.date | date:'F j.' }}
+            {{ item.date | date:'F j. (l)' }}
         </div>
         {% endifchanged %}
         <div class="flex-table row {% ifchanged item.date %}new-day{% endifchanged %}" role="rowgroup">
@@ -19,7 +19,7 @@
             {% endif %}
             {% if show_location %}
             <div class="flex-row" role="cell">
-                <a href="{% url 'location' item.location.slug %}">{{ item.location.name }}</a>
+                <a href="{% url 'city-location' item.location.city.slug item.location.slug %}">{{ item.location.name }}</a>
             </div>
             {% endif %}
             <div class="flex-row" role="cell">
