@@ -13,7 +13,8 @@ def home(request):
 
 
 def search(request):
-    locations = models.Location.objects.all()\
+    locations = models.Location.objects\
+        .filter(is_active=True)\
         .select_related('city__name', 'city__slug', 'city__diocese__name')\
         .order_by('city__diocese__name', 'city__name', 'name')\
         .values_list('city__diocese__name', 'city__name', 'name', 'city__slug', 'slug')
