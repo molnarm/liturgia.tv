@@ -58,7 +58,7 @@ def diocese(request, diocese):
     diocese_object = get_object_or_404(models.Diocese, slug=diocese)
     schedule = queries.get_schedule(diocese_slug=diocese)
 
-    return render(request, 'zsolozsma/diocese.html', { 'diocese': diocese, 'schedule': schedule })
+    return render(request, 'zsolozsma/diocese.html', { 'diocese': diocese_object, 'schedule': schedule })
 
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(models.EventSchedule, hash=hash)

@@ -102,6 +102,7 @@ def get_broadcast_status(schedule, date):
 class BroadcastItem(object):
     def __init__(self, event, broadcast):
         self.event_name = event.name
+        self.city_name = event.location.city.name
         self.location_name = event.location.name
         self.liturgy_name = event.liturgy.name
 

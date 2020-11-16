@@ -1,6 +1,8 @@
 {% extends "zsolozsma/layout.html" %}
 {% block bodyclass %}broadcast-page{% endblock %}
 {% block title %}{{ broadcast.event_name }} - {{ broadcast.location_name }}{% endblock %}
+{% block ogtitle %}Közvetítés - {{ broadcast.event_name }}{% endblock %}
+{% block ogdescription %}{{ broadcast.city_name }}, {{ broadcast.location_name }}{% endblock %}
 {% block nav %}
 <div class="nav broadcast-title">
     <span class="broadcast-details">{{ broadcast.event_name }} - {{ broadcast.location_name }}</span>

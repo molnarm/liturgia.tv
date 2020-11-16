@@ -1,5 +1,6 @@
 {% extends "zsolozsma/layout.html" %}
 {% block title %}{{ location.name }}{% endblock %}
+{% block ogtitle %}Közvetítések - {{ location.city.name }}, {{ location.name }}{% endblock %}
 {% block content %}
 <div class="location">
     <h1>{{ location.city.name }}, {{ location.name }}</h1>

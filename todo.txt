@@ -1,4 +1,4 @@
-egyházmegye és város szerinti csoportosítás
+szertartások leírását kitölteni, legyen link a szövegekhez
 felekezet/rítus szerinti csoportosítás?
 események egyedi dátummal
 egyedi esemény időtartam
