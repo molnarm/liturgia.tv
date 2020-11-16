@@ -188,6 +188,15 @@ a {
     text-align: justify;
 }
 
+.information ul {
+    margin-left: 24px;
+}
+
+ul.no-bullets {
+    list-style: none;
+    margin: 0px;
+}
+
 /* COLOURS */
 
 a,
