@@ -168,13 +168,15 @@ def __get_or_create_broadcast(schedule, date):
             text_url = event.text_url
         else:
             try:
-                liturgy_text = models.LiturgyText.objects.get(
-                    liturgy=event.liturgy, date=date)
+                liturgy_text = models.LiturgyText.objects.get(liturgy=event.liturgy, date=date)
                 if(liturgy_text):
                     text_url = liturgy_text.text_url
-                    broadcast.save()
             except ObjectDoesNotExist:
-                pass
+                if(event.liturgy.text_url_pattern):
+                    try:
+                        text_url = date.strftime(event.liturgy.text_url_pattern)
+                    except ValueError:
+                        pass
 
         if (text_url):
             broadcast.text_url = text_url

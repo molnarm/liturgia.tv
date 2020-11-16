@@ -54,12 +54,8 @@ class Location(models.Model):
     """Helyszín"""
 
     name = models.CharField('Rövid név', max_length=100, blank=False)
-    fullname = models.CharField('Teljes név',
-                                max_length=300,
-                                blank=False)
-    slug = models.SlugField('URL részlet',
-                            max_length=50,
-                            blank=False)
+    fullname = models.CharField('Teljes név', max_length=300, blank=False)
+    slug = models.SlugField('URL részlet', max_length=50, blank=False)
     city = models.ForeignKey("City",
                              verbose_name='Település',
                              on_delete=models.CASCADE,
@@ -94,6 +90,9 @@ class Liturgy(models.Model):
                             max_length=50,
                             blank=False,
                             unique=True)
+    text_url_pattern = models.CharField('Szöveg URL sablon',
+                                        max_length=300,
+                                        blank=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
