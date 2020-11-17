@@ -10,6 +10,10 @@ SCHEDULE_FUTURE_DAYS = os.getenv('SCHEDULE_FUTURE_DAYS', 3)
 TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 
+class BroadcastState:
+    Future, Maybe, Live, Past = range(4)
+
+
 class ScheduleItem(object):
     location = None
     name = None
@@ -17,9 +21,8 @@ class ScheduleItem(object):
     date = None
     time = None
 
-    enabled = False
-    live = False
-    shown = False
+    state = None
+    style = None
 
     def __init__(self, schedule, date, time):
         self.schedule = schedule
@@ -28,16 +31,23 @@ class ScheduleItem(object):
         self.date = date
         self.time = time
 
-        (self.enabled, self.live, self.shown) = get_broadcast_status(schedule, date)
+        self.state = get_broadcast_status(schedule, date)
 
+        if (self.state == BroadcastState.Live):
+            self.style = 'live'
+        elif (self.state == BroadcastState.Maybe):
+            self.style = 'highlight'
+        else:
+            self.style = 'disabled'
+        
 
 def get_schedule(
-        date=None,
-        event=None,
-        location_slug=None,
-        liturgy_slug=None,
-        city_slug=None,
-        diocese_slug=None):
+                date=None,
+                 event=None,
+                 location_slug=None,
+                 liturgy_slug=None,
+                 city_slug=None,
+                 diocese_slug=None):
     scheduleQuery = models.EventSchedule.objects\
         .select_related('event', 'event__location', 'event__location__city', 'event__location__city__diocese')\
         .filter(event__is_active=True, event__location__is_active=True)
@@ -67,18 +77,17 @@ def get_schedule(
     schedule = list()
     for (_date, _day) in dates:
         schedule.extend([i for i in [ScheduleItem(item, _date, item.time)
-                                     for item in scheduleQuery if item.day_of_week == _day] if i.shown])
+                                     for item in scheduleQuery if item.day_of_week == _day] if i.state != BroadcastState.Past])
 
     schedule.sort(key=attrgetter('date', 'time', 'name'))
 
     return schedule
 
 
-# (enabled, live, shown)
 def get_broadcast_status(schedule, date):
     now = timezone.localtime()
     if (now.date() < date):
-        return (False, False, True)
+        return BroadcastState.Future
 
     event_time = timezone.get_current_timezone().localize(
         datetime.combine(date, schedule.time))
@@ -87,16 +96,16 @@ def get_broadcast_status(schedule, date):
 
     duration = schedule.event.duration or 60
 
-    if (minutes < - TIMEDELTA_TOLERANCE):
-        return (False, False, True)  # még több, mint 15 perc a kezdésig
+    if (minutes < -TIMEDELTA_TOLERANCE):
+        return BroadcastState.Future  # még több, mint 15 perc a kezdésig
     elif (minutes < 0):
-        return (True, False, True)  # 15 percen belül kezdődik
+        return BroadcastState.Maybe  # 15 percen belül kezdődik
     elif (minutes < duration):
-        return (True, True, True)   # éppen tart
+        return BroadcastState.Live  # éppen tart
     elif (minutes < duration + TIMEDELTA_TOLERANCE):
-        return (True, False, True)  # 15 percen belül ért véget
+        return BroadcastState.Maybe  # 15 percen belül ért véget
     else:
-        return (False, False, False)
+        return BroadcastState.Past
 
 
 class BroadcastItem(object):

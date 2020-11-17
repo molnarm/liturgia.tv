@@ -65,8 +65,9 @@ def broadcast(request, hash, date):
     date = datetime.strptime(date, '%Y-%m-%d').date()
 
     broadcast = queries.get_broadcast(schedule_object, date)
+    state = queries.get_broadcast_status(schedule_object, date)
 
     if(broadcast):
-        return render(request, 'zsolozsma/broadcast.html', {'broadcast': broadcast})
+        return render(request, 'zsolozsma/broadcast.html', {'broadcast': broadcast, 'state': state })
 
     raise Http404("Nincs ilyen közvetítés!")
