@@ -1,3 +1,4 @@
+értesítés: kezdésnél frissítés miatt eltűnik => service worker kell, minden böngésző támogatja, ami az értesítéseket is
 szertartások leírását kitölteni, legyen link a szövegekhez
 felekezet/rítus szerinti csoportosítás?
 események egyedi dátummal

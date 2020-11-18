@@ -68,9 +68,9 @@ def broadcast(request, hash, date):
     state = queries.get_broadcast_status(schedule_object, date)
 
     if(broadcast):
-        if(state == queries.BroadcastState.Future):
-            return render(request, 'zsolozsma/broadcast_future.html', {'broadcast': broadcast })
-        else:
+        if(state == queries.BroadcastState.Live or 'mutasd' in request.GET):
             return render(request, 'zsolozsma/broadcast_current.html', {'broadcast': broadcast })
+        else:
+            return render(request, 'zsolozsma/broadcast_future.html', {'broadcast': broadcast, 'state': state })
 
     raise Http404("Nincs ilyen közvetítés!")
