@@ -115,7 +115,8 @@ class BroadcastItem(object):
         self.location_name = event.location.name
         self.liturgy_name = event.liturgy.name
         
-        self.datetime = timezone.get_current_timezone().localize(datetime.combine(broadcast.date, broadcast.schedule.time))
+        self.starttime = datetime.combine(broadcast.date, broadcast.schedule.time)
+        self.starttime_label = timezone.get_current_timezone().localize(self.starttime)
 
         self.has_text = bool(broadcast.text_url)
         self.text_url = broadcast.text_url
