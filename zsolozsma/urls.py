@@ -2,6 +2,8 @@ from django.urls import path, re_path
 from zsolozsma import views
 
 urlpatterns = [
+    path('service.js', views.service_worker),
+
     # Kezdőlap
     path("", views.home, name="home"),
 

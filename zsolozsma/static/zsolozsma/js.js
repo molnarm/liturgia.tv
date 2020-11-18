@@ -21,33 +21,52 @@ function toggleNotifications(eventName) {
         trigger.innerText = 'Értesítsen, ha kezdődik!';
     }
     else {
-        if (!("Notification" in window)) {
-            alert("A böngésző nem támogatja az értesítéseket!");
-        }
-        else if (Notification.permission === "granted") {
-            setNotifications(eventName);
-            trigger.innerText = 'Mégse értesítsen, ha kezdődik!';
-        }
-        else if (Notification.permission !== "denied") {
-            Notification.requestPermission(function (permission) {
-                if (permission === "granted") {
-                    setNotifications(eventName);
-                    trigger.innerText = 'Mégse értesítsen, ha kezdődik!';
-                }
+        usingNotifications(function () {
+            usingServiceWorkers(function (worker) {
+                setNotifications(worker, eventName);
+                trigger.innerText = 'Mégse értesítsen, ha kezdődik!';
             });
-        }
-
+        });
     }
 }
-function setNotifications(eventName) {
+function setNotifications(worker, eventName) {
     zsolozsmaNotifications = [
-        setTimeout(function () { createNotification(eventName, 'Hamarosan kezdődik a közvetítés!') }, window.zsolozsmaStartTime - 60000 - Date.now()),
-        setTimeout(function () { createNotification(eventName, 'Kezdődik a közvetítés!') }, window.zsolozsmaStartTime - Date.now())
+        setTimeout(function () { setNotification(worker, eventName, 'Hamarosan kezdődik a közvetítés!') }, window.zsolozsmaStartTime - 60000 - Date.now()),
+        setTimeout(function () { setNotification(worker, eventName, 'Kezdődik a közvetítés!') }, window.zsolozsmaStartTime - Date.now())
     ];
 }
-function createNotification(title, message) {
-    return new Notification(title, {
-        body: message,
-        icon: '/static/zsolozsma/favicon.png'
-    });
+function setNotification(worker, eventName, message) {
+    worker.showNotification(eventName, { body: message, icon: '/static/zsolozsma/notification.png' });
+}
+function usingNotifications(callback) {
+    if (!("Notification" in window)) {
+        alert("A böngésző nem támogatja az értesítéseket!");
+    }
+    else if (Notification.permission === "granted") {
+        callback();
+    }
+    else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
+            if (permission === "granted") {
+                callback();
+            }
+        });
+    }
+}
+var zsolozsmaWorker;
+function usingServiceWorkers(callback) {
+    if (zsolozsmaWorker) {
+        callback(zsolozsmaWorker);
+    }
+    else if (!('serviceWorker' in navigator)) {
+        alert("A böngésző nem támogatja az értesítéseket!");
+    }
+    else {
+        navigator.serviceWorker.register('/service.js')
+            .then(function (registration) {
+                zsolozsmaWorker = registration;
+                callback(zsolozsmaWorker);
+            })
+            .catch(function (error) { alert("Nem sikerült értesítéseket létrehozni!") });
+    }
 }

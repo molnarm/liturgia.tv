@@ -74,3 +74,6 @@ def broadcast(request, hash, date):
             return render(request, 'zsolozsma/broadcast_future.html', {'broadcast': broadcast, 'state': state })
 
     raise Http404("Nincs ilyen közvetítés!")
+
+def service_worker(request):
+    return HttpResponse(content_type='application/javascript')
