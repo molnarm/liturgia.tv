@@ -1,0 +1,13 @@
+{% extends "zsolozsma/broadcast.html" %}
+{% block content %}
+<div class="broadcast">
+    <div class="future-info">
+        <p>Ez a közvetítés még nem kezdődött el.</p>
+        <p>A tervezett időpontban ({{ broadcast.datetime }}) az oldal automatikusan frissül majd, de addig is
+            megpróbálhatod megnyitni <a href="{{ broadcast.video_url }}" title="Videó megnyitása" target="_blank">a
+                videót</a>{% if broadcast.has_text %} vagy <a href="{{ broadcast.text_url }}" title="Szöveg megnyitása"
+                target="_blank">a szöveget</a>{% endif %}.
+        </p>
+    </div>
+</div>
+{% endblock %}
