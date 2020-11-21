@@ -76,10 +76,9 @@ def get_schedule(
 
     schedule = list()
     for (_date, _day) in dates:
-        schedule.extend([i for i in [ScheduleItem(item, _date, item.time)
-                                     for item in scheduleQuery if item.day_of_week == _day] if i.state != BroadcastState.Past])
+        schedule.extend([i for i in [ScheduleItem(item, _date, item.time) for item in scheduleQuery if item.day_of_week == _day] if i.state != BroadcastState.Past])
 
-    schedule.sort(key=attrgetter('date', 'time', 'name'))
+    schedule.sort(key=attrgetter('date', 'time', 'location.city.name', 'location.name'))
 
     return schedule
 
