@@ -1,8 +1,9 @@
 from django.urls import path, re_path
+from django.views.generic import TemplateView
 from zsolozsma import views
 
 urlpatterns = [
-    path('service.js', views.service_worker),
+    path('service.js', TemplateView.as_view(template_name='zsolozsma/service.js', content_type='application/javascript',), name='service.js'),
 
     # Kezdőlap
     path("", views.home, name="home"),

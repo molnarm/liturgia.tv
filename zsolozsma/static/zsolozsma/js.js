@@ -49,7 +49,7 @@ function setNotifications(worker, eventName) {
     ];
 }
 function setNotification(worker, eventName, message) {
-    worker.showNotification(eventName, { body: message, icon: '/static/zsolozsma/notification.png' });
+    worker.showNotification(eventName, { body: message, icon: '/static/zsolozsma/notification.png', data: { 'url': window.location.origin + window.location.pathname } });
 }
 function usingNotifications(callback) {
     if (Notification.permission === "granted") {
