@@ -6,8 +6,12 @@ function toggleTheme(element) {
     if (element.rel == 'stylesheet') element.rel = 'stylesheet alternate';
     else element.rel = 'stylesheet';
 }
-function refreshAtStart() {
+function initBroadcast() {
     setTimeout(function () { location.reload() }, window.zsolozsmaStartTime - Date.now());
+
+    if (checkFeatures()) {
+        document.getElementById('notification-trigger').parentElement.style.display = 'block';
+    }
 }
 
 var zsolozsmaNotifications;
@@ -29,6 +33,15 @@ function toggleNotifications(eventName) {
         });
     }
 }
+function checkFeatures() {
+    if (!("Notification" in window)) {
+        return false;
+    }
+    if (!('serviceWorker' in navigator)) {
+        return false;
+    }
+    return true;
+}
 function setNotifications(worker, eventName) {
     zsolozsmaNotifications = [
         setTimeout(function () { setNotification(worker, eventName, 'Hamarosan kezdődik a közvetítés!') }, window.zsolozsmaStartTime - 60000 - Date.now()),
@@ -39,10 +52,7 @@ function setNotification(worker, eventName, message) {
     worker.showNotification(eventName, { body: message, icon: '/static/zsolozsma/notification.png' });
 }
 function usingNotifications(callback) {
-    if (!("Notification" in window)) {
-        alert("A böngésző nem támogatja az értesítéseket!");
-    }
-    else if (Notification.permission === "granted") {
+    if (Notification.permission === "granted") {
         callback();
     }
     else if (Notification.permission !== "denied") {
@@ -57,9 +67,6 @@ var zsolozsmaWorker;
 function usingServiceWorkers(callback) {
     if (zsolozsmaWorker) {
         callback(zsolozsmaWorker);
-    }
-    else if (!('serviceWorker' in navigator)) {
-        alert("A böngésző nem támogatja az értesítéseket!");
     }
     else {
         navigator.serviceWorker.register('/service.js')

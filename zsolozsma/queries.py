@@ -11,7 +11,7 @@ TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 
 class BroadcastState:
-    Future, Maybe, Live, Past = range(4)
+    Future, Upcoming, Live, Recent, Past = range(5)
 
 
 class ScheduleItem(object):
@@ -35,7 +35,7 @@ class ScheduleItem(object):
 
         if (self.state == BroadcastState.Live):
             self.style = 'live'
-        elif (self.state == BroadcastState.Maybe):
+        elif (self.state == BroadcastState.Upcoming or self.state == BroadcastState.Recent):
             self.style = 'highlight'
         else:
             self.style = 'disabled'
@@ -98,11 +98,11 @@ def get_broadcast_status(schedule, date):
     if (minutes < -TIMEDELTA_TOLERANCE):
         return BroadcastState.Future  # még több, mint 15 perc a kezdésig
     elif (minutes < 0):
-        return BroadcastState.Maybe  # 15 percen belül kezdődik
+        return BroadcastState.Upcoming  # 15 percen belül kezdődik
     elif (minutes < duration):
         return BroadcastState.Live  # éppen tart
     elif (minutes < duration + TIMEDELTA_TOLERANCE):
-        return BroadcastState.Maybe  # 15 percen belül ért véget
+        return BroadcastState.Recent  # 15 percen belül ért véget
     else:
         return BroadcastState.Past
 

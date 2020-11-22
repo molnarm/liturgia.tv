@@ -7,11 +7,11 @@
         <p>A tervezett időpontban ({{ broadcast.starttime_label }}) az oldal automatikusan frissül majd.
         </p>
         
-        <p><a id="notification-trigger" href="#" onclick="javascript:toggleNotifications('{{ broadcast.event_name }}')">Értesítsen, ha kezdődik!</a></p>
+        <p style="display: none;"><a id="notification-trigger" href="#" onclick="javascript:toggleNotifications('{{ broadcast.event_name }}')">Értesítsen, ha kezdődik!</a></p>
     </div>
 </div>
 <script type="text/javascript">
 window.zsolozsmaStartTime = new Date({{ broadcast.starttime|utc|date:'U'}}*1000);
-refreshAtStart()
+initBroadcast()
 </script>
 {% endblock %}
