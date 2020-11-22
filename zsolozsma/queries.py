@@ -127,10 +127,6 @@ class BroadcastItem(object):
 
 
 def get_broadcast(schedule, date):
-    now = timezone.localtime()
-    if (now.date() < date):
-        return None
-
     broadcast = __get_or_create_broadcast(schedule, date)
 
     broadcast_item = BroadcastItem(schedule.event, broadcast)
