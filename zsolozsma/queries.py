@@ -1,10 +1,14 @@
-from operator import attrgetter
-from datetime import datetime, timedelta
-from django.utils import timezone
-from zsolozsma import models, youtube
-from django.core.exceptions import ObjectDoesNotExist
-import urllib.request
+import itertools
 import os
+import urllib.request
+from collections import defaultdict
+from datetime import datetime, timedelta
+from operator import attrgetter
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+
+from zsolozsma import models, youtube
 
 SCHEDULE_FUTURE_DAYS = os.getenv('SCHEDULE_FUTURE_DAYS', 3)
 TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
@@ -15,21 +19,31 @@ class BroadcastState:
 
 
 class ScheduleItem(object):
-    location = None
     name = None
-    schedule = None
+    schedule_hash = None
     date = None
     time = None
+    city_slug=None
+    city_name=None
+    location_slug=None
+    location_name=None
 
     state = None
     style = None
 
-    def __init__(self, schedule, date, time):
-        self.schedule = schedule
-        self.name = schedule.event.name
-        self.location = schedule.event.location
+    def __init__(self, schedule, date):
+        event = schedule.event
+        location = event.location
+        city = location.city
+
+        self.name = event.name
+        self.schedule_hash = schedule.hash
         self.date = date
-        self.time = time
+        self.time = schedule.time
+        self.city_slug=city.slug
+        self.city_name=city.name
+        self.location_slug = location.slug
+        self.location_name = location.name
 
         self.state = get_broadcast_status(schedule, date)
 
@@ -42,8 +56,6 @@ class ScheduleItem(object):
         
 
 def get_schedule(
-                date=None,
-                 event=None,
                  location_slug=None,
                  liturgy_slug=None,
                  city_slug=None,
@@ -51,16 +63,10 @@ def get_schedule(
     scheduleQuery = models.EventSchedule.objects\
         .select_related('event', 'event__location', 'event__location__city', 'event__location__city__diocese')\
         .filter(event__is_active=True, event__location__is_active=True)
+  
+    today = timezone.localtime().date()
 
-    if(date):
-        weekday = date.weekday()
-        dates = [(date, weekday)]
-        scheduleQuery = scheduleQuery.filter(day_of_week=weekday)
-    else:
-        today = timezone.localtime().date()
-
-        dates = [(date, date.weekday())
-                 for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
+    dates = [(date, date.weekday()) for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
     if(location_slug):
         scheduleQuery = scheduleQuery.filter(event__location__slug=location_slug)
@@ -71,14 +77,22 @@ def get_schedule(
     if(diocese_slug):
         scheduleQuery = scheduleQuery.filter(event__location__city__diocese__slug=diocese_slug)
 
-    if(event):
-        scheduleQuery = scheduleQuery.filter(event=event)
+    scheduleQuery = scheduleQuery.filter(day_of_week__in=[d[1] for d in dates])
+    days = defaultdict(list)
+    for scheduleItem in scheduleQuery:
+        days[scheduleItem.day_of_week].append(scheduleItem)
 
-    schedule = list()
-    for (_date, _day) in dates:
-        schedule.extend([i for i in [ScheduleItem(item, _date, item.time) for item in scheduleQuery if item.day_of_week == _day] if i.state != BroadcastState.Past])
+    schedule = [
+                scheduleItem 
+                for scheduleItem in [
+                    ScheduleItem(eventSchedule, _date) 
+                    for (_date, _day) in dates
+                    for eventSchedule in days[_day]
+                ]
+                if scheduleItem.state != BroadcastState.Past
+            ]
 
-    schedule.sort(key=attrgetter('date', 'time', 'location.city.name', 'location.name'))
+    schedule.sort(key=attrgetter('date', 'time', 'city_name', 'location_name'))
 
     return schedule
 

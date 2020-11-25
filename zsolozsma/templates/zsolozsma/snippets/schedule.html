@@ -12,21 +12,20 @@
             </div>
             {%if show_city %}
             <div class="flex-row" role="cell">
-                {% if item.location.city %}
-                <a href="{% url 'city' item.location.city.slug %}">{{ item.location.city.name }}</a>
-                {% endif %}
+                <a href="{% url 'city' item.city_slug %}">{{ item.city_name }}</a>
             </div>
             {% endif %}
             {% if show_location %}
             <div class="flex-row" role="cell">
-                <a href="{% url 'city-location' item.location.city.slug item.location.slug %}">{{ item.location.name }}</a>
+                <a
+                    href="{% url 'city-location' item.city_slug item.location_slug %}">{{ item.location_name }}</a>
             </div>
             {% endif %}
             <div class="flex-row" role="cell">
                 {{ item.name }}
             </div>
             <div class="flex-row" role="cell">
-                <a href="{% url 'broadcast' hash=item.schedule.hash date=item.date %}">
+                <a href="{% url 'broadcast' hash=item.schedule_hash date=item.date %}">
                     <span class="material-icons {{ item.style }}">&#xe63a;</span>
                 </a>
             </div>

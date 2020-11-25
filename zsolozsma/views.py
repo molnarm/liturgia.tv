@@ -29,22 +29,18 @@ def info(request):
     return render(request, 'zsolozsma/info.html')
 
 
-def location(request, city, location, date=None):
+def location(request, city, location):
     location_object = get_object_or_404(models.Location, city__slug=city, slug=location)
-    if(date):
-        date = datetime.strptime(date, '%Y-%m-%d').date()
 
-    schedule = queries.get_schedule(city_slug=city, location_slug=location, date=date)
+    schedule = queries.get_schedule(city_slug=city, location_slug=location)
 
     return render(request, 'zsolozsma/location.html', {'location': location_object, 'schedule': schedule})
 
 
-def liturgy(request, liturgy, date=None):
+def liturgy(request, liturgy):
     liturgy_object = get_object_or_404(models.Liturgy, slug=liturgy)
-    if(date):
-        date = datetime.strptime(date, '%Y-%m-%d').date()
 
-    schedule = queries.get_schedule(liturgy_slug=liturgy, date=date)
+    schedule = queries.get_schedule(liturgy_slug=liturgy)
 
     return render(request, 'zsolozsma/liturgy.html', {'liturgy': liturgy_object, 'schedule': schedule})
 

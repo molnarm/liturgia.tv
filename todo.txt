@@ -1,6 +1,6 @@
+youtube link a csatornára
 szertartások leírását kitölteni, legyen link a szövegekhez
 vissza gomb a közvetítésekhez
-rendes viewmodelek
 felekezet/rítus szerinti csoportosítás?
 események egyedi dátummal
 egyedi esemény időtartam
