@@ -7,7 +7,7 @@ function toggleTheme(element) {
     else element.rel = 'stylesheet';
 }
 function initBroadcast() {
-    setTimeout(function () { location.reload() }, window.zsolozsmaStartTime - Date.now());
+    setTimeout(function () { window.location.href = window.location.origin + window.location.pathname + '?mutasd' }, window.zsolozsmaStartTime - Date.now());
 
     if (checkFeatures()) {
         document.getElementById('notification-trigger').parentElement.style.display = 'block';
