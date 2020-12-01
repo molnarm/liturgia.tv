@@ -1,6 +1,6 @@
 import re
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseGone
 from zsolozsma import models
 from zsolozsma import queries
 from datetime import datetime
@@ -65,7 +65,7 @@ def broadcast(request, hash, date):
 
     if(broadcast):
         if(state == queries.BroadcastState.Past):
-            raise Http404("Nincs ilyen közvetítés!")
+            return HttpResponseGone("Ez a közvetítés már nem elérhető.")
         elif(state == queries.BroadcastState.Live or state == queries.BroadcastState.Recent or 'mutasd' in request.GET):
             return render(request, 'zsolozsma/broadcast_current.html', {'broadcast': broadcast })
         else:
