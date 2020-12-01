@@ -8,7 +8,7 @@
     <a href="#" onclick="javascript:history.back()"><span class="material-icons">&#xe317;</span></a>
     <span class="broadcast-details">{{ broadcast.event_name }} - {{ broadcast.location_name }}</span>
     <span class="broadcast-links">
-        <a href="{{ broadcast.video_url }}" title="Videó megnyitása" target="_blank"><span class="material-icons highlight">&#xe04a;</span></a>
+        <a href="{{ broadcast.video_link_url }}" title="Videó megnyitása" target="_blank"><span class="material-icons highlight">&#xe04a;</span></a>
         <a href="{% if broadcast.has_text %}{{ broadcast.text_url }}{% else %}#{% endif %}" title="{% if broadcast.has_text %}Szöveg megnyitása{% else %}Nincs szöveg{% endif %}" target="_blank"><span class="material-icons {% if broadcast.has_text %}highlight{% else %}disabled{% endif %}">&#xe02f;</span></a>
     </span>
 </div>

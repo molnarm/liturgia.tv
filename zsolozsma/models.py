@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils.text import slugify
 import secrets
+from zsolozsma import youtube
 
 
 class Diocese(models.Model):
@@ -215,13 +216,17 @@ class Broadcast(models.Model):
                             auto_now=False,
                             auto_now_add=False,
                             blank=False)
-    video_url = models.URLField('Videó URL', max_length=500, blank=False)
+    video_url = models.URLField('Videó URL',
+                                max_length=500,
+                                blank=True,
+                                null=True)
+    video_youtube_channel = models.URLField('Videó YouTube csatorna',
+                                            max_length=24,
+                                            blank=True,
+                                            null=True)
     video_iframe = models.BooleanField('Videó beágyazható',
                                        blank=True,
                                        default=True)
-    video_only = models.BooleanField('Beágyazás csak maga a videó',
-                                     blank=True,
-                                     default=True)
     text_url = models.URLField('Szöveg URL', max_length=500, blank=True)
     text_iframe = models.BooleanField('Szöveg beágyazható',
                                       blank=True,
@@ -235,3 +240,18 @@ class Broadcast(models.Model):
         event = self.schedule.event
         return "%s %s %s %s" % (event.location.name, event.name, self.date,
                                 self.schedule.time)
+
+    def get_video_embed_url(self):
+        if (self.video_youtube_channel):
+            return youtube.get_embed(self.video_youtube_channel)
+        else:
+            return self.video_url
+
+    def get_video_link_url(self):
+        if (self.video_youtube_channel):
+            return youtube.get_link(self.video_youtube_channel)
+        else:
+            return self.video_url
+
+    def is_16_9(self):
+        return bool(self.video_youtube_channel)

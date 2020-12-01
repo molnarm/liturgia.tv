@@ -23,10 +23,10 @@ class ScheduleItem(object):
     schedule_hash = None
     date = None
     time = None
-    city_slug=None
-    city_name=None
-    location_slug=None
-    location_name=None
+    city_slug = None
+    city_name = None
+    location_slug = None
+    location_name = None
 
     state = None
     style = None
@@ -40,8 +40,8 @@ class ScheduleItem(object):
         self.schedule_hash = schedule.hash
         self.date = date
         self.time = schedule.time
-        self.city_slug=city.slug
-        self.city_name=city.name
+        self.city_slug = city.slug
+        self.city_name = city.name
         self.location_slug = location.slug
         self.location_name = location.name
 
@@ -49,33 +49,37 @@ class ScheduleItem(object):
 
         if (self.state == BroadcastState.Live):
             self.style = 'live'
-        elif (self.state == BroadcastState.Upcoming or self.state == BroadcastState.Recent):
+        elif (self.state == BroadcastState.Upcoming
+              or self.state == BroadcastState.Recent):
             self.style = 'highlight'
         else:
             self.style = 'disabled'
-        
 
-def get_schedule(
-                 location_slug=None,
+
+def get_schedule(location_slug=None,
                  liturgy_slug=None,
                  city_slug=None,
                  diocese_slug=None):
     scheduleQuery = models.EventSchedule.objects\
         .select_related('event', 'event__location', 'event__location__city', 'event__location__city__diocese')\
         .filter(event__is_active=True, event__location__is_active=True)
-  
+
     today = timezone.localtime().date()
 
-    dates = [(date, date.weekday()) for date in [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
+    dates = [(date, date.weekday()) for date in
+             [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
-    if(location_slug):
-        scheduleQuery = scheduleQuery.filter(event__location__slug=location_slug)
-    if(liturgy_slug):
+    if (location_slug):
+        scheduleQuery = scheduleQuery.filter(
+            event__location__slug=location_slug)
+    if (liturgy_slug):
         scheduleQuery = scheduleQuery.filter(event__liturgy__slug=liturgy_slug)
-    if(city_slug):
-        scheduleQuery = scheduleQuery.filter(event__location__city__slug=city_slug)
-    if(diocese_slug):
-        scheduleQuery = scheduleQuery.filter(event__location__city__diocese__slug=diocese_slug)
+    if (city_slug):
+        scheduleQuery = scheduleQuery.filter(
+            event__location__city__slug=city_slug)
+    if (diocese_slug):
+        scheduleQuery = scheduleQuery.filter(
+            event__location__city__diocese__slug=diocese_slug)
 
     scheduleQuery = scheduleQuery.filter(day_of_week__in=[d[1] for d in dates])
     days = defaultdict(list)
@@ -83,14 +87,11 @@ def get_schedule(
         days[scheduleItem.day_of_week].append(scheduleItem)
 
     schedule = [
-                scheduleItem 
-                for scheduleItem in [
-                    ScheduleItem(eventSchedule, _date) 
-                    for (_date, _day) in dates
-                    for eventSchedule in days[_day]
-                ]
-                if scheduleItem.state != BroadcastState.Past
-            ]
+        scheduleItem for scheduleItem in [
+            ScheduleItem(eventSchedule, _date) for (_date, _day) in dates
+            for eventSchedule in days[_day]
+        ] if scheduleItem.state != BroadcastState.Past
+    ]
 
     schedule.sort(key=attrgetter('date', 'time', 'city_name', 'location_name'))
 
@@ -127,17 +128,20 @@ class BroadcastItem(object):
         self.city_name = event.location.city.name
         self.location_name = event.location.name
         self.liturgy_name = event.liturgy.name
-        
-        self.starttime = datetime.combine(broadcast.date, broadcast.schedule.time)
-        self.starttime_label = timezone.get_current_timezone().localize(self.starttime)
+
+        self.starttime = datetime.combine(broadcast.date,
+                                          broadcast.schedule.time)
+        self.starttime_label = timezone.get_current_timezone().localize(
+            self.starttime)
 
         self.has_text = bool(broadcast.text_url)
         self.text_url = broadcast.text_url
         self.text_iframe = broadcast.text_iframe
 
-        self.video_url = broadcast.video_url
+        self.video_embed_url = broadcast.get_video_embed_url()
+        self.video_link_url = broadcast.get_video_link_url()
         self.video_iframe = broadcast.video_iframe
-        self.video_only = broadcast.video_only
+        self.video_only = broadcast.is_16_9()
 
 
 def get_broadcast(schedule, date):
@@ -158,45 +162,41 @@ def __get_or_create_broadcast(schedule, date):
         broadcast.schedule = schedule
         broadcast.date = date
 
-    if(not broadcast.video_url):
-        video_url = None
-
-        if(schedule.youtube_channel):
-            video_url = youtube.get_video(schedule.youtube_channel)
-            broadcast.video_only = True
-        elif(event.youtube_channel):
-            video_url = youtube.get_video(event.youtube_channel)
-            broadcast.video_only = True
-        elif(schedule.video_url):
-            video_url = event.video_url
-        elif(event.video_url):
-            video_url = event.video_url
-        elif(event.location.youtube_channel):
-            video_url = youtube.get_video(event.location.youtube_channel)
-            broadcast.video_only = True
+    if (not broadcast.get_video_embed_url()):
+        if (schedule.youtube_channel):
+            broadcast.video_youtube_channel = schedule.youtube_channel
+        elif (event.youtube_channel):
+            broadcast.video_youtube_channel = event.youtube_channel
+        elif (schedule.video_url):
+            broadcast.video_url = event.video_url
+        elif (event.video_url):
+            broadcast.video_url = event.video_url
+        elif (event.location.youtube_channel):
+            broadcast.video_youtube_channel = event.location.youtube_channel
         else:
-            video_url = event.location.video_url
+            broadcast.video_url = event.location.video_url
 
-        if(video_url):
-            broadcast.video_url = video_url
-            broadcast.video_iframe = __check_iframe_support(video_url)
-            broadcast.save()
+        broadcast.video_iframe = __check_iframe_support(
+            broadcast.get_video_embed_url())
+        broadcast.save()
 
     if (not broadcast.text_url):
         text_url = None
-        if(schedule.text_url):
+        if (schedule.text_url):
             text_url = schedule.text_url
-        elif(event.text_url):
+        elif (event.text_url):
             text_url = event.text_url
         else:
             try:
-                liturgy_text = models.LiturgyText.objects.get(liturgy=event.liturgy, date=date)
-                if(liturgy_text):
+                liturgy_text = models.LiturgyText.objects.get(
+                    liturgy=event.liturgy, date=date)
+                if (liturgy_text):
                     text_url = liturgy_text.text_url
             except ObjectDoesNotExist:
-                if(event.liturgy.text_url_pattern):
+                if (event.liturgy.text_url_pattern):
                     try:
-                        text_url = date.strftime(event.liturgy.text_url_pattern)
+                        text_url = date.strftime(
+                            event.liturgy.text_url_pattern)
                     except ValueError:
                         pass
 
@@ -209,6 +209,9 @@ def __get_or_create_broadcast(schedule, date):
 
 
 def __check_iframe_support(url):
+    if (not url):
+        return False
+
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
     frame_header = response.getheader('X-Frame-Options')
