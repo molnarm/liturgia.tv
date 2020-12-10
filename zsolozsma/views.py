@@ -15,12 +15,13 @@ def home(request):
 def search(request):
     locations = models.Location.objects\
         .filter(is_active=True)\
-        .select_related('city__name', 'city__slug', 'city__diocese__name')\
-        .order_by('city__diocese__name', 'city__name', 'name')\
-        .values_list('city__diocese__name', 'city__name', 'name', 'city__slug', 'slug')
+        .select_related('city__name', 'city__slug')\
+        .order_by('city__name', 'name')\
+        .values_list('city__name', 'name', 'city__slug', 'slug')
     liturgies = models.Liturgy.objects.all()\
-        .order_by('name')\
-        .values_list('name', 'slug')
+        .select_related('denomination__name')\
+        .order_by('denomination__name', 'name')\
+        .values_list('denomination__name', 'name', 'slug')
 
     return render(request, 'zsolozsma/search.html', {'locations': locations, 'liturgies': liturgies})
 
@@ -49,12 +50,6 @@ def city(request, city):
     schedule = queries.get_schedule(city_slug=city)
 
     return render(request, 'zsolozsma/city.html', { 'city': city_object, 'schedule': schedule })
-
-def diocese(request, diocese):
-    diocese_object = get_object_or_404(models.Diocese, slug=diocese)
-    schedule = queries.get_schedule(diocese_slug=diocese)
-
-    return render(request, 'zsolozsma/diocese.html', { 'diocese': diocese_object, 'schedule': schedule })
 
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(models.EventSchedule, hash=hash)

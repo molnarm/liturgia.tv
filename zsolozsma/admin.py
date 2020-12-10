@@ -25,20 +25,6 @@ class EventInline(admin.TabularInline):
 class CityAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', )
     ordering = ['name']
-    list_display = ('name', 'diocese')
-
-
-class CityInline(admin.TabularInline):
-    model = zsolozsma.models.City
-
-
-@admin.register(zsolozsma.models.Diocese)
-class DioceseAdmin(admin.ModelAdmin):
-    readonly_fields = ('slug', )
-    inlines = [
-        CityInline,
-    ]
-    ordering = ['name']
 
 
 @admin.register(zsolozsma.models.Location)
@@ -60,6 +46,20 @@ class LiturgyAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', )
     inlines = [
         LiturgyTextInline,
+    ]
+    ordering = ['name']
+    list_display = ('name', 'denomination')
+
+
+class LiturgyInline(admin.TabularInline):
+    model = zsolozsma.models.Liturgy
+
+
+@admin.register(zsolozsma.models.Denomination)
+class DenominationAdmin(admin.ModelAdmin):
+    readonly_fields = ('slug', )
+    inlines = [
+        LiturgyInline,
     ]
     ordering = ['name']
 

@@ -7,23 +7,23 @@
     <h2>Szertartások</h2>
     <ul>
     {% for liturgy in liturgies %}
-    <li><a href="{% url 'liturgy' liturgy.1 %}">{{ liturgy.0 }}</a></li>
+        {% ifchanged liturgy.0 %}
+            {% if not forloop.first %}</ul>{% endif %}
+            <h3>{{ liturgy.0|default:"Felekezet/rítus nincs megadva" }}</h4>        
+            <ul>
+        {% endifchanged %}
+    <li><a href="{% url 'liturgy' liturgy.2 %}">{{ liturgy.1 }}</a></li>
     {% endfor %}
     </ul>
     
     <h2>Helyszínek</h2>
     {% for location in locations %}
-        {% ifchanged location.1 %}
-            {% if not forloop.first %}</ul>{% endif %}
-        {% endifchanged %}
         {% ifchanged location.0 %}
-            <h3>{{ location.0|default:"Egyházmegye nincs megadva" }}</h3>
-        {% endifchanged %}
-        {% ifchanged location.1 %}
-            <h4>{{ location.1|default:"Város nincs megadva" }}</h4>        
+            {% if not forloop.first %}</ul>{% endif %}
+            <h3>{{ location.0|default:"Város nincs megadva" }}</h4>        
             <ul>
         {% endifchanged %}
-        <li><a href="{% url 'city-location' location.3 location.4 %}">{{ location.2 }}</a></li>
+        <li><a href="{% url 'city-location' location.2 location.3 %}">{{ location.1 }}</a></li>
     {% endfor %}
     </ul>
 </div>

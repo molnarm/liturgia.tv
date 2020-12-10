@@ -21,9 +21,6 @@ urlpatterns = [
 
     # Közvetítés
     re_path(r'^kozvetites/(?P<hash>[\w]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.broadcast, name='broadcast'),
-
-    # Egyházmegye
-    re_path(r'^egyhazmegye/(?P<diocese>[\w-]+)/$', views.diocese, name='diocese'),
     
     # Város
     re_path(r'^(?P<city>[\w-]+)/$', views.city, name='city'),

@@ -58,10 +58,9 @@ class ScheduleItem(object):
 
 def get_schedule(location_slug=None,
                  liturgy_slug=None,
-                 city_slug=None,
-                 diocese_slug=None):
+                 city_slug=None):
     scheduleQuery = models.EventSchedule.objects\
-        .select_related('event', 'event__location', 'event__location__city', 'event__location__city__diocese')\
+        .select_related('event', 'event__location', 'event__location__city')\
         .filter(event__is_active=True, event__location__is_active=True)
 
     today = timezone.localtime().date()
@@ -77,9 +76,6 @@ def get_schedule(location_slug=None,
     if (city_slug):
         scheduleQuery = scheduleQuery.filter(
             event__location__city__slug=city_slug)
-    if (diocese_slug):
-        scheduleQuery = scheduleQuery.filter(
-            event__location__city__diocese__slug=diocese_slug)
 
     scheduleQuery = scheduleQuery.filter(day_of_week__in=[d[1] for d in dates])
     days = defaultdict(list)

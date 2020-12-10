@@ -5,8 +5,8 @@ import secrets
 from zsolozsma import youtube
 
 
-class Diocese(models.Model):
-    """Egyházmegye"""
+class Denomination(models.Model):
+    """Felekezet"""
 
     name = models.CharField('Név', blank=False, unique=True, max_length=200)
     slug = models.SlugField('URL részlet',
@@ -16,14 +16,14 @@ class Diocese(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(Diocese, self).save(*args, **kwargs)
+        super(Denomination, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = 'Egyházmegye'
-        verbose_name_plural = 'Egyházmegyék'
+        verbose_name = 'Felekezet'
+        verbose_name_plural = 'Felekezetek'
 
 
 class City(models.Model):
@@ -34,10 +34,6 @@ class City(models.Model):
                             max_length=100,
                             blank=False,
                             unique=True)
-    diocese = models.ForeignKey("Diocese",
-                                verbose_name='Egyházmegye',
-                                on_delete=models.CASCADE,
-                                blank=False)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -87,6 +83,10 @@ class Liturgy(models.Model):
 
     name = models.CharField('Név', max_length=100, blank=False, unique=True)
     description = models.TextField('Leírás', max_length=500, blank=True)
+    denomination = models.ForeignKey("Denomination",
+                             verbose_name='Felekezet',
+                             on_delete=models.CASCADE,
+                             null=True)
     slug = models.SlugField('URL részlet',
                             max_length=50,
                             blank=False,

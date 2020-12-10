@@ -1,6 +1,13 @@
+BUG
+Pasarét kompletórium: &amp;-ok vannak az URLekben
 csak szövegesnél túl nagy a youtube videó
-szertartások leírását kitölteni, legyen link a szövegekhez
-felekezet/rítus szerinti csoportosítás?
+
+FEATURE
+események érvényessége (ne kelljen majd karácsonykor törölgetnem a rorátékat)
 események egyedi dátummal
-egyedi esemény időtartam
+
+CONTENT
+szertartások leírását kitölteni, legyen link a szövegekhez
+
+TECH
 db query ellenőrzés
