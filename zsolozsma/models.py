@@ -6,7 +6,7 @@ from zsolozsma import youtube
 
 
 class Denomination(models.Model):
-    """Felekezet"""
+    """Felekezet/rítus"""
 
     name = models.CharField('Név', blank=False, unique=True, max_length=200)
     slug = models.SlugField('URL részlet',
@@ -22,8 +22,8 @@ class Denomination(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Felekezet'
-        verbose_name_plural = 'Felekezetek'
+        verbose_name = 'Felekezet/rítus'
+        verbose_name_plural = 'Felekezetek/rítusok'
 
 
 class City(models.Model):

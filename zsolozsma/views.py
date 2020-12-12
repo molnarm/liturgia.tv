@@ -45,11 +45,21 @@ def liturgy(request, liturgy):
 
     return render(request, 'zsolozsma/liturgy.html', {'liturgy': liturgy_object, 'schedule': schedule})
 
+
 def city(request, city):
     city_object = get_object_or_404(models.City, slug=city)
     schedule = queries.get_schedule(city_slug=city)
 
     return render(request, 'zsolozsma/city.html', { 'city': city_object, 'schedule': schedule })
+
+
+def denomination(request, denomination, city=None):
+    denomination_object = get_object_or_404(models.Denomination, slug=denomination)
+
+    schedule = queries.get_schedule(city_slug=city, denomination_slug=denomination)
+
+    return render(request, 'zsolozsma/denomination.html', {'denomination': denomination_object, 'schedule': schedule})
+    
 
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(models.EventSchedule, hash=hash)

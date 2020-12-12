@@ -16,16 +16,17 @@ urlpatterns = [
 
     # Szertartás adatlapja, közvetítések
     path('szertartas/<slug:liturgy>/', views.liturgy, name='liturgy'),
-    re_path(r'^szertartas/(?P<liturgy>[\w-]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.liturgy, name='liturgy-date'),
-    re_path(r'^szertartas/(?P<liturgy>[\w-]+)/(?P<location>[\w-]+)/$', views.liturgy, name='liturgy-location'),
+
+    # Felekezet/rítus
+    path('felekezet/<slug:denomination>/', views.denomination, name='denomination'),
+    path('felekezet/<slug:denomination>/<slug:city>/', views.denomination, name='denomination-city'),
 
     # Közvetítés
     re_path(r'^kozvetites/(?P<hash>[\w]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.broadcast, name='broadcast'),
     
     # Város
-    re_path(r'^(?P<city>[\w-]+)/$', views.city, name='city'),
+    path('<slug:city>/', views.city, name='city'),
     # Helyszín adatlapja, közvetítések
-    re_path(r'^(?P<city>[\w-]+)/(?P<location>[\w-]+)/$', views.location, name='city-location'),
-    re_path(r'^(?P<city>[\w-]+)/(?P<location>[\w-]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.location, name='city-location-date'),
+    path('<slug:city>/<slug:location>/', views.location, name='city-location'),
 
 ]

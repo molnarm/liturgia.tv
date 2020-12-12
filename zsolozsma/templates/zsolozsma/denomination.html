@@ -1,0 +1,9 @@
+{% extends "zsolozsma/layout.html" %}
+{% block title %}{{ denomination.name }}{% endblock %}
+{% block ogtitle %}Közvetítések - {{ denomination.name }} szertartások{% endblock %}
+{% block content %}
+<div class="denomination">
+    <h1>{{ denomination.name }} szertartások</h1>
+</div>
+{% include 'zsolozsma/snippets/schedule.html' with show_city=True show_location=True %}
+{% endblock %}

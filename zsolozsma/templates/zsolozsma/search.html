@@ -15,7 +15,7 @@
     <li><a href="{% url 'liturgy' liturgy.2 %}">{{ liturgy.1 }}</a></li>
     {% endfor %}
     </ul>
-    
+    <hr />
     <h2>Helyszínek</h2>
     {% for location in locations %}
         {% ifchanged location.0 %}
