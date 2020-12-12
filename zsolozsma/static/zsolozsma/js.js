@@ -1,10 +1,16 @@
 function toggleThemes() {
-    toggleTheme(document.getElementById('css-dark'))
-    toggleTheme(document.getElementById('css-light'))
+    toggleTheme('dark')
+    toggleTheme('light')
 }
-function toggleTheme(element) {
-    if (element.rel == 'stylesheet') element.rel = 'stylesheet alternate';
-    else element.rel = 'stylesheet';
+function toggleTheme(theme) {
+    var element = document.getElementById('css-' + theme)
+    if (element.rel == 'stylesheet') {
+        element.rel = 'stylesheet alternate';
+    }
+    else {
+        element.rel = 'stylesheet';
+        document.cookie = "theme=" + theme + "; max-age=" + 30 * 86400 + "; path=/";
+    }
 }
 function initBroadcast() {
     setTimeout(function () { window.location.href = window.location.origin + window.location.pathname + '?mutasd' }, window.zsolozsmaStartTime - Date.now());

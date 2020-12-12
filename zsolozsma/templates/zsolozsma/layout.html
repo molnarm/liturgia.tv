@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
 <head>
     <meta charset="utf-8"/>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="JQnWoOUVITAhO1R4oTEZFibclRnwG-w_WmeE6ocRjGs" />
     <title>ZsolozsMA - {% block title %}{% endblock %}</title>
@@ -11,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Oxygen&display=swap" rel="stylesheet"> 
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'zsolozsma/style.css' %}"/>
-    <link id="css-dark" rel="stylesheet" type="text/css" href="{% static 'zsolozsma/dark.css' %}"/>
-    <link id="css-light" rel="stylesheet alternate" type="text/css" href="{% static 'zsolozsma/light.css' %}"/>
+    <link id="css-dark" rel="stylesheet{% if request.COOKIES.theme and request.COOKIES.theme != 'dark' %} alternate{% endif %}" type="text/css" href="{% static 'zsolozsma/dark.css' %}"/>
+    <link id="css-light" rel="stylesheet{% if not request.COOKIES.theme or request.COOKIES.theme != 'light' %} alternate{% endif %}" type="text/css" href="{% static 'zsolozsma/light.css' %}"/>
     <link rel="icon" href="{% static 'zsolozsma/favicon.png' %}"/>
     <script type="text/javascript" src="{% static 'zsolozsma/js.js' %}"></script>
     <meta property="og:url" content="{{ request.path }}" />

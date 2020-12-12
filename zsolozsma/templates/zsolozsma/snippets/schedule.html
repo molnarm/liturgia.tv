@@ -2,11 +2,11 @@
     <div class="table-container" role="table" aria-label="Közvetítések">
         {% for item in schedule %}
         {% ifchanged item.date %}
-        <div class="flex-table row" role="rowgroup">
+        <div class="flex-table row" role="row">
             {{ item.date | date:'F j. (l)' }}
         </div>
         {% endifchanged %}
-        <div class="flex-table row {% ifchanged item.date %}new-day{% endifchanged %}" role="rowgroup">
+        <div class="flex-table row {% ifchanged item.date %}new-day{% endifchanged %}" role="row">
             <div class="flex-row" role="cell">
                 {{ item.time }}
             </div>
