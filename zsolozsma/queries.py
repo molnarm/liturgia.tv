@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from operator import attrgetter
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.utils import timezone
 
 from zsolozsma import models, youtube
@@ -15,7 +16,7 @@ TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 
 class BroadcastState:
-    Future, Upcoming, Live, Recent, Past = range(5)
+    Future, Upcoming, Live, Recent, Past, Invalid = range(6)
 
 
 class ScheduleItem(object):
@@ -60,14 +61,17 @@ def get_schedule(location_slug=None,
                  liturgy_slug=None,
                  city_slug=None,
                  denomination_slug=None):
-    scheduleQuery = models.EventSchedule.objects\
-        .select_related('event', 'event__location', 'event__location__city')\
-        .filter(event__is_active=True, event__location__is_active=True)
 
     today = timezone.localtime().date()
-
+    validity_end = today + timedelta(days=SCHEDULE_FUTURE_DAYS)
     dates = [(date, date.weekday()) for date in
              [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
+
+    scheduleQuery = models.EventSchedule.objects\
+        .select_related('event', 'event__location', 'event__location__city')\
+        .filter(event__is_active=True, event__location__is_active=True)\
+        .filter(Q(valid_from__lte=validity_end)|Q(valid_from=None))\
+        .filter(Q(valid_to__gte=today)|Q(valid_to=None))
 
     if (location_slug):
         scheduleQuery = scheduleQuery.filter(event__location__slug=location_slug)
@@ -88,6 +92,7 @@ def get_schedule(location_slug=None,
             ScheduleItem(eventSchedule, _date) for (_date, _day) in dates
             for eventSchedule in days[_day]
         ] if scheduleItem.state != BroadcastState.Past
+        and scheduleItem.state != BroadcastState.Invalid
     ]
 
     schedule.sort(key=attrgetter('date', 'time', 'city_name', 'location_name'))
@@ -102,6 +107,12 @@ def get_broadcast_status(schedule, date):
 
     event_time = timezone.get_current_timezone().localize(
         datetime.combine(date, schedule.time))
+
+    if (schedule.valid_from and schedule.valid_from > date):
+        return BroadcastState.Invalid
+    if (schedule.valid_to and schedule.valid_to < date):
+        return BroadcastState.Invalid
+
     difference = now - event_time
     minutes = difference.total_seconds() / 60
 

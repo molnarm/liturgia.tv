@@ -84,9 +84,9 @@ class Liturgy(models.Model):
     name = models.CharField('Név', max_length=100, blank=False, unique=True)
     description = models.TextField('Leírás', max_length=500, blank=True)
     denomination = models.ForeignKey("Denomination",
-                             verbose_name='Felekezet',
-                             on_delete=models.CASCADE,
-                             null=True)
+                                     verbose_name='Felekezet',
+                                     on_delete=models.CASCADE,
+                                     null=True)
     slug = models.SlugField('URL részlet',
                             max_length=50,
                             blank=False,
@@ -172,6 +172,8 @@ class EventSchedule(models.Model):
                                 max_length=500,
                                 blank=True)
     text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
+    valid_from = models.DateField('Érvényesség kezdete', null=True, blank=True)
+    valid_to = models.DateField('Érvényesség vége', null=True, blank=True)
 
     def __str__(self):
         date_str = EventSchedule.Weekdays(self.day_of_week).name
