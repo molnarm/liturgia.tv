@@ -1,5 +1,6 @@
 import itertools
 import os
+import urllib.error
 import urllib.request
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -176,7 +177,7 @@ def __get_or_create_broadcast(schedule, date):
         elif (event.youtube_channel):
             broadcast.video_youtube_channel = event.youtube_channel
         elif (schedule.video_url):
-            broadcast.video_url = event.video_url
+            broadcast.video_url = schedule.video_url
         elif (event.video_url):
             broadcast.video_url = event.video_url
         elif (event.location.youtube_channel):
@@ -220,7 +221,10 @@ def __check_iframe_support(url):
     if (not url):
         return False
 
-    request = urllib.request.Request(url)
-    response = urllib.request.urlopen(request)
-    frame_header = response.getheader('X-Frame-Options')
-    return frame_header is None
+    try:
+        request = urllib.request.Request(url)
+        response = urllib.request.urlopen(request)
+        frame_header = response.getheader('X-Frame-Options')
+        return frame_header is None
+    except urllib.error.URLError:
+        return True
