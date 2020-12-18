@@ -138,4 +138,4 @@ LOGGING = {
 }
 
 # Activate Django-Heroku.
-django_heroku.settings(locals(), logging=False, databases=not DEBUG)
+django_heroku.settings(locals(), logging=False, databases=not DEBUG, test_runner=False)
