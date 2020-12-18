@@ -30,3 +30,4 @@ jobs:
         python manage.py test
       env: 
         ALLOWED_HOSTS: '*'
+        SECRET_KEY: '49l9t_gk!o#+i9d53-ro33g(9_9l5g1j))ws74e&0j7%%@f8u='
