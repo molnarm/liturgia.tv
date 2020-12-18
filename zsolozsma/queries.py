@@ -48,14 +48,15 @@ class ScheduleItem(object):
         self.location_name = location.name
 
         self.state = get_broadcast_status(schedule, date)
+        self.style = self.__get_style()
 
+    def __get_style(self):
         if (self.state == BroadcastState.Live):
-            self.style = 'live'
-        elif (self.state == BroadcastState.Upcoming
-              or self.state == BroadcastState.Recent):
-            self.style = 'highlight'
+            return 'live'
+        elif (self.state == BroadcastState.Upcoming or self.state == BroadcastState.Recent):
+            return 'highlight'
         else:
-            self.style = 'disabled'
+            return 'disabled'
 
 
 def get_schedule(location_slug=None,
@@ -228,3 +229,4 @@ def __check_iframe_support(url):
         return frame_header is None
     except urllib.error.URLError:
         return True
+        
