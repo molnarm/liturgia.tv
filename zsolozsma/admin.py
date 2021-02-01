@@ -1,5 +1,6 @@
 from django.contrib import admin
 import zsolozsma.models
+from django.utils import timezone
 
 
 class EventScheduleInline(admin.TabularInline):
@@ -39,6 +40,12 @@ class LocationAdmin(admin.ModelAdmin):
 
 class LiturgyTextInline(admin.TabularInline):
     model = zsolozsma.models.LiturgyText
+    extra = 30
+
+    def get_queryset(self, request):
+        today = timezone.localtime().date()
+        qs = super().get_queryset(request)
+        return qs.filter(date__gte=today)
 
 
 @admin.register(zsolozsma.models.Liturgy)
