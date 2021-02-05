@@ -82,66 +82,23 @@ div {
 .broadcast {
     position: absolute;
     top: 70px;
-    bottom: 0px;
+    bottom: 0;
     width: 100%;
+}
+
+.video,
+.text 
+{
+    width: 100%;
+}
+
+.missing {
+    height: 70px;
 }
 
 .video-wrapper {
     width: 100%;
     height: 100%;
-}
-
-/* no video, no text */
-.no-video .video,
-.no-text .text {
-    height: 70px; /* message */
-    width: 100%;
-}
-
-/* video, no text */
-.with-video.no-text .video
-{
-    position: absolute;
-    top: 0;
-    bottom: 70px;
-    height: auto;
-    width: 100%;
-}
-.with-video.no-text .text{
-    position: absolute;
-    bottom: 0;
-}
-
-.with-video.video-16-9.no-text .video
-{
-    position: relative;
-}
-.with-video.video-16-9.no-text .text{
-    position: relative;
-}
-
-/* text, no video */
-.broadcast.no-video.with-text {
-    display: flex;
-    flex-direction: column;
-}
-.no-video.with-text .text {
-    flex: 1;
-}
-
-/* video and text */
-.with-video.with-text .video,
-.with-video.with-text .text {
-    position: relative;
-    width: 50%;
-    height: 100%;
-    float: left;
-}
-
-iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
 }
 
 .video-16-9 .video-wrapper {
@@ -150,16 +107,38 @@ iframe {
     height: 0;
 }
 
+iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
 .video-16-9 .video iframe {
     position: absolute;
     top: 0;
     left: 0;
 }
 
+.no-video .text {
+    height: calc(100% - 70px);
+}
+
+.video-16-9.with-text .present {
+    height: 50%;
+    position: relative;
+}
+
+@media only screen and (min-width: 1280px) {
+    .with-video.with-text .present {
+        width: 50%;
+        float: left;
+        height: 100%;
+    }
+}
+
 .broadcast .future-info {
     max-width: 960px;
     margin: 0 auto;
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -229,27 +208,6 @@ a:hover,
     color: red;
 }
 
-/* KICSI */
-@media only screen and (max-width: 1280px){
-    .broadcast {
-        display: flex;
-        flex-direction: column;
-    }
-    .video, 
-    .text {
-        width: 100% !important;
-        height: auto !important;
-    }
-    .video {
-        flex: 1;
-    }
-    .video-16-9 .video{
-        flex: none;
-    }
-    .text {
-        flex: 1;
-    }
-}
 /* MOBIL */
 @media only screen and (max-width: 720px){
     body {
@@ -266,4 +224,17 @@ a:hover,
         width: 33.3%;
         line-height: 36px;
     }
+}
+
+/* SPLIT.JS */
+.split,
+.gutter.gutter-horizontal {
+    float: left;
+    height: 100%;
+}
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+}
+.gutter.gutter-vertical {
+    cursor: row-resize;
 }

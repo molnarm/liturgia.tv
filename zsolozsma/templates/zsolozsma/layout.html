@@ -13,6 +13,7 @@
     <link id="css-dark" rel="stylesheet{% if request.COOKIES.theme and request.COOKIES.theme != 'dark' %} alternate{% endif %}" type="text/css" href="{% static 'zsolozsma/dark.css' %}"/>
     <link id="css-light" rel="stylesheet{% if not request.COOKIES.theme or request.COOKIES.theme != 'light' %} alternate{% endif %}" type="text/css" href="{% static 'zsolozsma/light.css' %}"/>
     <link rel="icon" href="{% static 'zsolozsma/favicon.png' %}"/>
+    {% block scripts %}{% endblock %}
     <script type="text/javascript" src="{% static 'zsolozsma/js.js' %}"></script>
     <meta property="og:url" content="{{ request.path }}" />
     <meta property="og:locale" content="hu_HU" />

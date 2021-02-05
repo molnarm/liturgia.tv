@@ -1,11 +1,14 @@
 {% extends "zsolozsma/broadcast.html" %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+{% endblock %}
 {% block content %}
 <div class="broadcast 
     {% if broadcast.video_iframe %} with-video{% else %} no-video{%endif%}
     {% if broadcast.video_only %} video-16-9{% endif %}
     {% if broadcast.has_text and broadcast.text_iframe %} with-text{% else %} no-text{% endif %}
 ">
-    <div class="video">
+    <div class="video {% if broadcast.video_iframe %} present{% else %} missing{%endif%}">
         {% if broadcast.video_iframe %}
             <div class="video-wrapper">
                 <iframe src="{{ broadcast.video_embed_url }}"></iframe>
@@ -17,7 +20,7 @@
             </script>
         {% endif %}
     </div>
-    <div class="text">
+    <div class="text {% if broadcast.has_text and broadcast.text_iframe %} present{% else %} missing{% endif %}">
         {% if broadcast.has_text %}
             {% if broadcast.text_iframe %}
                 <iframe src="{{ broadcast.text_url }}"></iframe>
@@ -32,4 +35,5 @@
         {% endif %}
     </div>
 </div>
+<script type="text/javascript">setupBroadcastLayout()</script>
 {% endblock %}

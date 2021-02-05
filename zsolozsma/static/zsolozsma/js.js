@@ -12,7 +12,7 @@ function toggleTheme(theme) {
         document.cookie = "theme=" + theme + "; max-age=" + 30 * 86400 + "; path=/";
     }
 }
-function initBroadcast() {
+function futureBroadcast() {
     setTimeout(function () { window.location.href = window.location.origin + window.location.pathname + '?mutasd' }, window.zsolozsmaStartTime - Date.now());
 
     if (checkFeatures()) {
@@ -82,4 +82,23 @@ function usingServiceWorkers(callback) {
             })
             .catch(function (error) { alert("Nem sikerült értesítéseket létrehozni!") });
     }
+}
+
+var splitInstance;
+function setupBroadcastLayout() {
+    if (!document.querySelector('.with-video.with-text'))
+        return;
+
+    const mediaQuery = window.matchMedia('(min-width: 1280px)');
+    mediaQuery.addEventListener('change', layoutChanged);
+    layoutChanged(mediaQuery)
+}
+function layoutChanged(mediaQuery) {
+    if (splitInstance)
+        splitInstance.destroy();
+    
+    splitInstance = Split(['.video', '.text'], {
+        direction: mediaQuery.matches ? 'horizontal' : 'vertical',
+        minSize: [0, 0]
+    });
 }
