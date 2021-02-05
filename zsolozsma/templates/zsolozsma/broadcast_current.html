@@ -9,8 +9,10 @@
     {% if broadcast.has_text and broadcast.text_iframe %} with-text{% else %} no-text{% endif %}
 ">
     <div class="video {% if broadcast.video_iframe %} present{% else %} missing{%endif%}">
-        {% if broadcast.video_iframe %}
-            <iframe src="{{ broadcast.video_embed_url }}"></iframe>
+        {% if broadcast.video_iframe %}        
+            <div class="video-wrapper">
+                <iframe src="{{ broadcast.video_embed_url }}"></iframe>
+            </div>
         {% else %}
             {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_url %}
             <script type="text/javascript">

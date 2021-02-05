@@ -126,7 +126,7 @@ function sizeChanged() {
     }
 };
 function setVideoSize(video, h, w) {
-    const iframe = video.querySelector('iframe');
+    const iframe = video.querySelector('.video-wrapper');
     iframe.style.height = h + 'px';
     iframe.style.width = w + 'px';
 }
