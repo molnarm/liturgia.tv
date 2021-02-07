@@ -14,7 +14,7 @@
                 <iframe src="{{ broadcast.video_embed_url }}"></iframe>
             </div>
         {% else %}
-            {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_url %}
+            {% include "zsolozsma/snippets/warning.html" with content='A videót nem lehet beágyazni. Ha nem nyílt meg, kattints ide!' link=broadcast.video_link_url %}
             <script type="text/javascript">
                 window.open('{{ broadcast.video_link_url }}', '_blank', 'noopener');
             </script>
