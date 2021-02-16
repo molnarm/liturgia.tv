@@ -98,6 +98,20 @@ def denomination(request, denomination, city=None):
     })
 
 
+def miserend(request, id):
+    location_object = get_object_or_404(models.Location, miserend_id=id)
+
+    schedule = queries.get_schedule(miserend_id=id)
+
+    if (API_PARAMETER in request.GET):
+        return __JsonSchedule__(request, schedule)
+
+    return render(request, 'zsolozsma/location.html', {
+        'location': location_object,
+        'schedule': schedule
+    })
+
+
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(models.EventSchedule, hash=hash)
     date = datetime.strptime(date, '%Y-%m-%d').date()

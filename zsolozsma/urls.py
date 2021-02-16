@@ -21,6 +21,9 @@ urlpatterns = [
     path('felekezet/<slug:denomination>/', views.denomination, name='denomination'),
     path('felekezet/<slug:denomination>/<slug:city>/', views.denomination, name='denomination-city'),
 
+    # Miserend.hu
+    path('miserend/<int:id>/', views.miserend, name='miserend'),
+
     # Közvetítés
     re_path(r'^kozvetites/(?P<hash>[\w]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.broadcast, name='broadcast'),
     

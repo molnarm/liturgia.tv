@@ -69,7 +69,8 @@ class ScheduleItem(object):
 def get_schedule(location_slug=None,
                  liturgy_slug=None,
                  city_slug=None,
-                 denomination_slug=None):
+                 denomination_slug=None,
+                 miserend_id=None):
 
     today = timezone.localtime().date()
     validity_end = today + timedelta(days=SCHEDULE_FUTURE_DAYS)
@@ -93,6 +94,9 @@ def get_schedule(location_slug=None,
     if (denomination_slug):
         scheduleQuery = scheduleQuery.filter(
             event__liturgy__denomination__slug=denomination_slug)
+    if (miserend_id):
+        scheduleQuery = scheduleQuery.filter(
+            event__location__miserend_id=miserend_id)
 
     scheduleQuery = scheduleQuery.filter(day_of_week__in=[d[1] for d in dates])
     days = defaultdict(list)

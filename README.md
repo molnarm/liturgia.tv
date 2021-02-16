@@ -44,6 +44,7 @@ A közvetítés állapota a következő értékeket veheti fel:
 |/szertartas/`szertartás`|Egy szertartás (pl. `szentmise`) közvetítései|
 |/felekezet/`felekezet`[/`település`]|Egy felekezet/rítus (pl. `gorog-katolikus`) szertartásainak közvetítései, opcionálisan egy adott településre leszűkítve (pl. `gorog-katolikus`/`miskolc`) |
 |/varos/`település`[/`helyszín`]|Egy település (pl. `budapest`) vagy egy konkrét helyszín (pl. `budapest`/`pasaret`) közvetítései |
+|/miserend/`azonosító`|Egy helyszín közvetítései, miserend.hu azonosító alapján (pl. [Ferenciek tere = 36](https://miserend.hu/templom/36))|
 
 ### Példa
 

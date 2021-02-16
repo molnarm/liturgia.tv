@@ -11,7 +11,7 @@ class QueryTests(TestCase):
         self.city2 = City.objects.create(name='City 2')
 
         self.location1 = Location.objects.create(name='Church A', city=self.city1)                                               
-        self.location2 = Location.objects.create(name='Church B', city=self.city1)
+        self.location2 = Location.objects.create(name='Church B', city=self.city1, miserend_id=42)
         self.location3 = Location.objects.create(name='Church A', city=self.city2)
 
         self.denomination1 = Denomination.objects.create(name='Denomination 1')
@@ -86,6 +86,14 @@ class QueryTests(TestCase):
             ('Church A Liturgy 2', 'City 2')
             ], schedule)
 
+    def test_miserend_filter(self):
+        schedule=queries.get_schedule(miserend_id=42)
+
+        self.__assert_schedule([            
+            ('Church B Liturgy 1', 'City 1'),
+            ('Church B Liturgy 2', 'City 1')
+        ], schedule)
+        
     def test_validity(self):
         schedule11 = EventSchedule.objects.get(event__location=self.location1, event__liturgy=self.liturgy1)
         schedule11.valid_from = self.today + timedelta(days=1)

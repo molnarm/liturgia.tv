@@ -65,6 +65,7 @@ class Location(models.Model):
                                 max_length=500,
                                 blank=True)
     is_active = models.BooleanField('Aktív', blank=False, default=True)
+    miserend_id = models.IntegerField('miserend.hu ID', blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
