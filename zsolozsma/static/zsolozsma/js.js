@@ -89,18 +89,17 @@ var is_16_9;
 function setupBroadcastLayout() {
     is_16_9 = document.querySelector('.video-16-9');
 
+    if(is_16_9){
+        window.onresize = sizeChanged;
+        sizeChanged();
+    }
+
     if (!document.querySelector('.with-video.with-text'))
         return;
 
     const mediaQuery = window.matchMedia('(min-width: 1280px)');
     mediaQuery.addEventListener('change', layoutChanged);
     layoutChanged(mediaQuery);
-
-    if (!is_16_9)
-        return;
-
-    window.onresize = sizeChanged;
-    sizeChanged();
 }
 function layoutChanged(mediaQuery) {
     if (splitInstance)
@@ -113,16 +112,17 @@ function layoutChanged(mediaQuery) {
     });
 }
 function sizeChanged() {
+    const wrapper = document.querySelector('.broadcast')
     const video = document.querySelector('.video');
 
-    const containerW = video.offsetWidth;
-    const containerH = video.offsetHeight;
+    const maxW = video.offsetWidth;
+    const maxH = document.querySelector('.with-video.with-text') ? video.offsetHeight : wrapper.offsetHeight;
 
-    if (containerW > 16 / 9 * containerH) {
-        setVideoSize(video, containerH, containerH * 16 / 9);
+    if (maxW > 16 / 9 * maxH) {
+        setVideoSize(video, maxH, maxH * 16 / 9);
     }
     else {
-        setVideoSize(video, containerW * 9 / 16, containerW);
+        setVideoSize(video, maxW * 9 / 16, maxW);
     }
 };
 function setVideoSize(video, h, w) {
