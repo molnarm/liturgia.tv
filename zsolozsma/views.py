@@ -1,13 +1,19 @@
 import re
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, HttpResponseGone
+from django.http import HttpResponse, Http404, HttpResponseGone, JsonResponse
+from django.urls import reverse
 from zsolozsma import models
 from zsolozsma import queries
 from datetime import datetime
 
+API_PARAMETER = 'json'
+
 
 def home(request):
     schedule = queries.get_schedule()
+
+    if (API_PARAMETER in request.GET):
+        return __JsonSchedule__(request, schedule)
 
     return render(request, "zsolozsma/home.html", {'schedule': schedule})
 
@@ -23,7 +29,10 @@ def search(request):
         .order_by('denomination__name', 'name')\
         .values_list('denomination__name', 'name', 'slug')
 
-    return render(request, 'zsolozsma/search.html', {'locations': locations, 'liturgies': liturgies})
+    return render(request, 'zsolozsma/search.html', {
+        'locations': locations,
+        'liturgies': liturgies
+    })
 
 
 def info(request):
@@ -31,11 +40,19 @@ def info(request):
 
 
 def location(request, city, location):
-    location_object = get_object_or_404(models.Location, city__slug=city, slug=location)
+    location_object = get_object_or_404(models.Location,
+                                        city__slug=city,
+                                        slug=location)
 
     schedule = queries.get_schedule(city_slug=city, location_slug=location)
 
-    return render(request, 'zsolozsma/location.html', {'location': location_object, 'schedule': schedule})
+    if (API_PARAMETER in request.GET):
+        return __JsonSchedule__(request, schedule)
+
+    return render(request, 'zsolozsma/location.html', {
+        'location': location_object,
+        'schedule': schedule
+    })
 
 
 def liturgy(request, liturgy):
@@ -43,23 +60,43 @@ def liturgy(request, liturgy):
 
     schedule = queries.get_schedule(liturgy_slug=liturgy)
 
-    return render(request, 'zsolozsma/liturgy.html', {'liturgy': liturgy_object, 'schedule': schedule})
+    if (API_PARAMETER in request.GET):
+        return __JsonSchedule__(request, schedule)
+
+    return render(request, 'zsolozsma/liturgy.html', {
+        'liturgy': liturgy_object,
+        'schedule': schedule
+    })
 
 
 def city(request, city):
     city_object = get_object_or_404(models.City, slug=city)
     schedule = queries.get_schedule(city_slug=city)
 
-    return render(request, 'zsolozsma/city.html', { 'city': city_object, 'schedule': schedule })
+    if (API_PARAMETER in request.GET):
+        return __JsonSchedule__(request, schedule)
+
+    return render(request, 'zsolozsma/city.html', {
+        'city': city_object,
+        'schedule': schedule
+    })
 
 
 def denomination(request, denomination, city=None):
-    denomination_object = get_object_or_404(models.Denomination, slug=denomination)
+    denomination_object = get_object_or_404(models.Denomination,
+                                            slug=denomination)
 
-    schedule = queries.get_schedule(city_slug=city, denomination_slug=denomination)
+    schedule = queries.get_schedule(city_slug=city,
+                                    denomination_slug=denomination)
 
-    return render(request, 'zsolozsma/denomination.html', {'denomination': denomination_object, 'schedule': schedule})
-    
+    if (API_PARAMETER in request.GET):
+        return __JsonSchedule__(request, schedule)
+
+    return render(request, 'zsolozsma/denomination.html', {
+        'denomination': denomination_object,
+        'schedule': schedule
+    })
+
 
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(models.EventSchedule, hash=hash)
@@ -68,12 +105,41 @@ def broadcast(request, hash, date):
     broadcast = queries.get_broadcast(schedule_object, date)
     state = queries.get_broadcast_status(schedule_object, date)
 
-    if(broadcast):
-        if(state == queries.BroadcastState.Past):
+    if (broadcast):
+        if (state == queries.BroadcastState.Past):
             return HttpResponseGone("Ez a közvetítés már nem elérhető.")
-        elif(state == queries.BroadcastState.Live or state == queries.BroadcastState.Recent or 'mutasd' in request.GET):
-            return render(request, 'zsolozsma/broadcast_current.html', {'broadcast': broadcast })
+        elif (state == queries.BroadcastState.Live
+              or state == queries.BroadcastState.Recent
+              or 'mutasd' in request.GET):
+            return render(request, 'zsolozsma/broadcast_current.html',
+                          {'broadcast': broadcast})
         else:
-            return render(request, 'zsolozsma/broadcast_future.html', {'broadcast': broadcast, 'state': state })
+            return render(request, 'zsolozsma/broadcast_future.html', {
+                'broadcast': broadcast,
+                'state': state
+            })
 
     raise Http404("Nincs ilyen közvetítés!")
+
+
+def __JsonSchedule__(request, schedule):
+    return JsonResponse(list(
+        map(
+            lambda s: {
+                'date':
+                s.date,
+                'time':
+                s.time,
+                'city':
+                s.city_name,
+                'location':
+                s.location_name,
+                'name':
+                s.name,
+                'state':
+                s.state.value,
+                'url':
+                request.build_absolute_uri(
+                    reverse('broadcast', args=[s.schedule_hash, s.date]))
+            }, schedule)),
+                        safe=False)

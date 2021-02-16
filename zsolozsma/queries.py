@@ -5,6 +5,7 @@ import urllib.request
 from collections import defaultdict
 from datetime import datetime, timedelta
 from operator import attrgetter
+from enum import IntEnum
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -16,8 +17,13 @@ SCHEDULE_FUTURE_DAYS = os.getenv('SCHEDULE_FUTURE_DAYS', 3)
 TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
 
 
-class BroadcastState:
-    Future, Upcoming, Live, Recent, Past, Invalid = range(6)
+class BroadcastState(IntEnum):
+    Invalid = 0,
+    Future = 1,
+    Upcoming = 2,
+    Live = 3,
+    Recent = 4,
+    Past = 5
 
 
 class ScheduleItem(object):
@@ -53,7 +59,8 @@ class ScheduleItem(object):
     def __get_style(self):
         if (self.state == BroadcastState.Live):
             return 'live'
-        elif (self.state == BroadcastState.Upcoming or self.state == BroadcastState.Recent):
+        elif (self.state == BroadcastState.Upcoming
+              or self.state == BroadcastState.Recent):
             return 'highlight'
         else:
             return 'disabled'
@@ -76,13 +83,16 @@ def get_schedule(location_slug=None,
         .filter(Q(valid_to__gte=today)|Q(valid_to=None))
 
     if (location_slug):
-        scheduleQuery = scheduleQuery.filter(event__location__slug=location_slug)
+        scheduleQuery = scheduleQuery.filter(
+            event__location__slug=location_slug)
     if (liturgy_slug):
         scheduleQuery = scheduleQuery.filter(event__liturgy__slug=liturgy_slug)
     if (city_slug):
-        scheduleQuery = scheduleQuery.filter(event__location__city__slug=city_slug)
+        scheduleQuery = scheduleQuery.filter(
+            event__location__city__slug=city_slug)
     if (denomination_slug):
-        scheduleQuery = scheduleQuery.filter(event__liturgy__denomination__slug=denomination_slug)
+        scheduleQuery = scheduleQuery.filter(
+            event__liturgy__denomination__slug=denomination_slug)
 
     scheduleQuery = scheduleQuery.filter(day_of_week__in=[d[1] for d in dates])
     days = defaultdict(list)
@@ -229,4 +239,3 @@ def __check_iframe_support(url):
         return frame_header is None
     except urllib.error.URLError:
         return True
-        
