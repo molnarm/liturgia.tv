@@ -52,6 +52,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if(os.getenv('REDIRECT_TO_CUSTOM_DOMAIN') == 'True'):
+    MIDDLEWARE.append('zsolozsma.middleware.RedirectToCustomDomainMiddleware')
+
 ROOT_URLCONF = 'website.urls'
 
 TEMPLATES = [

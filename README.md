@@ -1,5 +1,5 @@
 # zsolozsma
-Élő zsolozsma- és miseközvetítések szöveggel: https://zsolozsma.herokuapp.com
+Élő zsolozsma- és miseközvetítések szöveggel: https://liturgia.tv
 
 Soha nem használtam még "éles" projektben Pythont, Djangót, PostgreSQL-t vagy Herokut, úgyhogy majd úgy javul a kód, ahogy tanulom ezeket ;-)
 
@@ -49,7 +49,7 @@ A közvetítés állapota a következő értékeket veheti fel:
 
 ### Példa
 
-`https://zsolozsma.herokuapp.com/szertartas/szentmise/?json`
+`https://liturgia.tv/szertartas/szentmise/?json`
 
 ```
 [
@@ -61,7 +61,7 @@ A közvetítés állapota a következő értékeket veheti fel:
         "name": "Szentmise",
         "state": 3,
         "duration": 60
-        "url": "https://zsolozsma.herokuapp.com//kozvetites/6acdf3b4/2021-02-16/"
+        "url": "https://liturgia.tv//kozvetites/6acdf3b4/2021-02-16/"
     },
     {
         "date": "2021-02-16",
@@ -71,7 +71,7 @@ A közvetítés állapota a következő értékeket veheti fel:
         "name": "Szentmise",
         "state": 1,
         "duration": 60,
-        "url": "https://zsolozsma.herokuapp.com//kozvetites/d78232c5/2021-02-16/"
+        "url": "https://liturgia.tv//kozvetites/d78232c5/2021-02-16/"
     },
     {
         "date": "2021-02-16",
@@ -81,7 +81,7 @@ A közvetítés állapota a következő értékeket veheti fel:
         "name": "Szentmise",
         "state": 1,
         "duration": 60,
-        "url": "https://zsolozsma.herokuapp.com//kozvetites/eae7c12d/2021-02-16/"
+        "url": "https://liturgia.tv//kozvetites/eae7c12d/2021-02-16/"
     },
     ...
 ]
