@@ -35,6 +35,7 @@ class ScheduleItem(object):
     city_name = None
     location_slug = None
     location_name = None
+    duration = None
 
     state = None
     style = None
@@ -52,6 +53,7 @@ class ScheduleItem(object):
         self.city_name = city.name
         self.location_slug = location.slug
         self.location_name = location.name
+        self.duration = event.duration
 
         self.state = get_broadcast_status(schedule, date)
         self.style = self.__get_style()

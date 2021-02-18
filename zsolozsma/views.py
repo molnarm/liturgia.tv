@@ -152,6 +152,8 @@ def __JsonSchedule__(request, schedule):
                 s.name,
                 'state':
                 s.state.value,
+                'duration':
+                s.duration,
                 'url':
                 request.build_absolute_uri(
                     reverse('broadcast', args=[s.schedule_hash, s.date]))

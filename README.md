@@ -21,6 +21,7 @@ Minden közvetítéseket listázó oldal eredménye elérhető JSON formátumban
     "location": "Helyszín", 
     "name": "Szertartás helyi elnevezése", 
     "state": Közvetítés állapota, 
+    "duration": Közvetítés várható hossza (perc)
     "url": "Hivatkozás a közvetítés oldalára"
 },
 ..]
@@ -59,6 +60,7 @@ A közvetítés állapota a következő értékeket veheti fel:
         "location": "Móraváros",
         "name": "Szentmise",
         "state": 3,
+        "duration": 60
         "url": "https://zsolozsma.herokuapp.com//kozvetites/6acdf3b4/2021-02-16/"
     },
     {
@@ -68,6 +70,7 @@ A közvetítés állapota a következő értékeket veheti fel:
         "location": "Kegytemplom",
         "name": "Szentmise",
         "state": 1,
+        "duration": 60,
         "url": "https://zsolozsma.herokuapp.com//kozvetites/d78232c5/2021-02-16/"
     },
     {
@@ -77,6 +80,7 @@ A közvetítés állapota a következő értékeket veheti fel:
         "location": "Böjte Csaba",
         "name": "Szentmise",
         "state": 1,
+        "duration": 60,
         "url": "https://zsolozsma.herokuapp.com//kozvetites/eae7c12d/2021-02-16/"
     },
     ...
