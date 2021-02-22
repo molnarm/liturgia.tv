@@ -9,7 +9,7 @@ function toggleTheme(theme) {
     }
     else {
         element.rel = 'stylesheet';
-        document.cookie = "theme=" + theme + "; max-age=" + 30 * 86400 + "; path=/";
+        document.cookie = "theme=" + theme + "; max-age=" + 30 * 86400 + "; path=/; samesite=strict";
     }
 }
 function futureBroadcast() {
