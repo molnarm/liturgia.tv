@@ -11,5 +11,6 @@
         <a href="{{ broadcast.video_link_url }}" title="Videó megnyitása" target="_blank"><span class="material-icons highlight">&#xe04a;</span></a>
         <a href="{% if broadcast.has_text %}{{ broadcast.text_url }}{% else %}#{% endif %}" title="{% if broadcast.has_text %}Szöveg megnyitása{% else %}Nincs szöveg{% endif %}" target="_blank"><span class="material-icons {% if broadcast.has_text %}highlight{% else %}disabled{% endif %}">&#xe02f;</span></a>
     </span>
+    <a id="theme-toggle" href="#" onclick="javascript:toggleThemes()" title="Világos/sötét színek cseréje"><span class="material-icons">&#xe427;</span></a>
 </div>
 {% endblock %}
