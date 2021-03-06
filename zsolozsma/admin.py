@@ -134,3 +134,8 @@ class BroadcastAdmin(admin.ModelAdmin):
         'date', 'schedule__time', 'schedule__event__location__city__name',
         'schedule__event__location__name'
     ]
+    
+    def get_queryset(self, request):
+        today = timezone.localtime().date()
+        qs = super().get_queryset(request)
+        return qs.filter(date__gte=today)
