@@ -64,8 +64,18 @@ class Location(models.Model):
     video_url = models.URLField('URL a közvetítéshez',
                                 max_length=500,
                                 blank=True)
-    is_active = models.BooleanField('Aktív', blank=False, default=True)
-    miserend_id = models.IntegerField('miserend.hu ID', blank=True, null=True)
+    is_active = models.BooleanField(
+        'Aktív',
+        blank=False,
+        default=True,
+        help_text='Vedd ki a pipát, ha a helyszínen nincsenek közvetítések.')
+    miserend_id = models.IntegerField(
+        'miserend.hu ID',
+        blank=True,
+        null=True,
+        help_text=
+        'A helyszín azonosítója a miserend.hu-n. Ha megadod, ott is megjelennek a közvetítések.'
+    )
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -92,9 +102,13 @@ class Liturgy(models.Model):
                             max_length=50,
                             blank=False,
                             unique=True)
-    text_url_pattern = models.CharField('Szöveg URL sablon',
-                                        max_length=300,
-                                        blank=True)
+    text_url_pattern = models.CharField(
+        'Szöveg URL sablon',
+        max_length=300,
+        blank=True,
+        help_text=
+        'Link a szertartás szövegeihez, lehet benne <a href="https://strftime.org/">dátumformátum.</a>'
+    )
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -111,7 +125,12 @@ class Liturgy(models.Model):
 class Event(models.Model):
     """Közvetített esemény (adott szertartás egy adott helyen)"""
 
-    name = models.CharField('Név', max_length=100, blank=False)
+    name = models.CharField(
+        'Név',
+        max_length=100,
+        blank=False,
+        help_text=
+        'A szertartás neve az adott helyen, ez fog megjelenni a listákban.')
     location = models.ForeignKey("Location",
                                  verbose_name='Helyszín',
                                  on_delete=models.CASCADE,
@@ -120,17 +139,40 @@ class Event(models.Model):
                                 verbose_name='Szertartás',
                                 on_delete=models.CASCADE,
                                 blank=False)
-    duration = models.IntegerField('Időtartam (perc)', blank=True, null=True)
+    duration = models.IntegerField(
+        'Időtartam (perc)',
+        blank=True,
+        null=True,
+        help_text='Csak akkor kell kitölteni, ha eltér a szokásostól.')
 
-    youtube_channel = models.CharField('Egyedi YouTube csatorna ID',
-                                       max_length=24,
-                                       blank=True)
-    video_url = models.URLField('Egyedi URL a közvetítéshez',
-                                max_length=500,
-                                blank=True)
-    text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
+    youtube_channel = models.CharField(
+        'Egyedi YouTube csatorna ID',
+        max_length=24,
+        blank=True,
+        help_text=
+        'Csak akkor kell kitölteni, ha más, mint a helyszín szokásos csatornája.'
+    )
+    video_url = models.URLField(
+        'Egyedi URL a közvetítéshez',
+        max_length=500,
+        blank=True,
+        help_text=
+        'Csak akkor kell kitölteni, ha más, mint a helyszín szokásos közvetítési oldala.'
+    )
+    text_url = models.URLField(
+        'Egyedi szöveg URL',
+        max_length=500,
+        blank=True,
+        help_text=
+        'Csak akkor kell kitölteni, ha más, mint a szertartás aznapi szokásos szövege.'
+    )
 
-    is_active = models.BooleanField('Aktív', blank=False, default=True)
+    is_active = models.BooleanField(
+        'Aktív',
+        blank=False,
+        default=True,
+        help_text='Vedd ki a pipát, ha az esemény határozatlan ideig szünetel.'
+    )
 
     def __str__(self):
         return "%s %s" % (self.location.name, self.name)
@@ -166,13 +208,21 @@ class EventSchedule(models.Model):
                             null=True,
                             blank=True)
 
-    youtube_channel = models.CharField('Egyedi YouTube csatorna ID',
-                                       max_length=24,
-                                       blank=True)
-    video_url = models.URLField('Egyedi URL a közvetítéshez',
-                                max_length=500,
-                                blank=True)
-    text_url = models.URLField('Egyedi szöveg URL', max_length=500, blank=True)
+    youtube_channel = models.CharField(
+        'Egyedi YouTube csatorna ID',
+        max_length=24,
+        blank=True,
+        help_text='Ha más, mint az esemény szokásos csatornája.')
+    video_url = models.URLField(
+        'Egyedi URL a közvetítéshez',
+        max_length=500,
+        blank=True,
+        help_text='Ha más, mint a helyszín szokásos közvetítési oldala.')
+    text_url = models.URLField(
+        'Egyedi szöveg URL',
+        max_length=500,
+        blank=True,
+        help_text='Ha más, mint a szertartás aznapi szokásos szövege.')
     valid_from = models.DateField('Érvényesség kezdete', null=True, blank=True)
     valid_to = models.DateField('Érvényesség vége', null=True, blank=True)
 

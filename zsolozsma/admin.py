@@ -11,6 +11,7 @@ class EventScheduleInline(admin.TabularInline):
 
 @admin.register(zsolozsma.models.Event)
 class EventAdmin(admin.ModelAdmin):
+    readonly_fields = ('location', )
     model = zsolozsma.models.Event
     inlines = [
         EventScheduleInline,
@@ -93,22 +94,16 @@ class LiturgyAdmin(admin.ModelAdmin):
     list_filter = ('denomination', )
 
 
-class LiturgyInline(admin.TabularInline):
-    model = zsolozsma.models.Liturgy
-
-
 @admin.register(zsolozsma.models.Denomination)
 class DenominationAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', )
-    inlines = [
-        LiturgyInline,
-    ]
     ordering = ['name']
 
 
 @admin.register(zsolozsma.models.Broadcast)
 class BroadcastAdmin(admin.ModelAdmin):
-    readonly_fields = ('schedule', 'date')
+    def get_readonly_fields(self, request, obj=None):
+        return self.fields or [f.name for f in self.model._meta.fields]
 
     def location_name(self, broadcast):
         return broadcast.schedule.event.location.city.name + ', ' + broadcast.schedule.event.location.name
