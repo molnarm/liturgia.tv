@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from zsolozsma import views
 
@@ -16,6 +16,7 @@ urlpatterns = [
 
     # Szertartás adatlapja, közvetítések
     path('szertartas/<slug:liturgy>/', views.liturgy, name='liturgy'),
+    path('szoveg/<slug:liturgy>/', views.liturgytext, name='liturgy-text'),    
 
     # Felekezet/rítus
     path('felekezet/<slug:denomination>/', views.denomination, name='denomination'),
@@ -24,6 +25,9 @@ urlpatterns = [
     # Miserend.hu
     path('miserend/<int:id>/', views.miserend, name='miserend'),
 
+    # HTML szerkesztés
+    path('tinymce/', include('tinymce.urls')),
+
     # Közvetítés
     re_path(r'^kozvetites/(?P<hash>[\w]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.broadcast, name='broadcast'),
     
@@ -31,5 +35,4 @@ urlpatterns = [
     path('<slug:city>/', views.city, name='city'),
     # Helyszín adatlapja, közvetítések
     path('<slug:city>/<slug:location>/', views.location, name='city-location'),
-
 ]

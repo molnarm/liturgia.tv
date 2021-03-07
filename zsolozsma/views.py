@@ -112,6 +112,16 @@ def miserend(request, id):
     })
 
 
+def liturgytext(request, liturgy):
+    liturgy_object = get_object_or_404(models.Liturgy, slug=liturgy)
+
+    if (liturgy_object.text):
+        return render(request, 'zsolozsma/liturgytext.html',
+                      {'liturgy': liturgy_object})
+
+    return Http404('Nincs ilyen szöveg.')
+
+
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(models.EventSchedule, hash=hash)
     date = datetime.strptime(date, '%Y-%m-%d').date()

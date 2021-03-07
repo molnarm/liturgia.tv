@@ -39,7 +39,8 @@ SECURE_SSL_REDIRECT = not DEBUG
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'zsolozsma'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'zsolozsma',
+    'tinymce'
 ]
 
 MIDDLEWARE = [
@@ -52,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if(os.getenv('REDIRECT_TO_CUSTOM_DOMAIN') == 'True'):
+if (os.getenv('REDIRECT_TO_CUSTOM_DOMAIN') == 'True'):
     MIDDLEWARE.append('zsolozsma.middleware.RedirectToCustomDomainMiddleware')
 
 ROOT_URLCONF = 'website.urls'
@@ -81,7 +82,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600,
                                               ssl_require=not DEBUG)
-                                              
+
 if 'test' in sys.argv or 'test_coverage' in sys.argv:
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
@@ -141,4 +142,21 @@ LOGGING = {
 }
 
 # Activate Django-Heroku.
-django_heroku.settings(locals(), logging=False, databases=not DEBUG, test_runner=False)
+django_heroku.settings(locals(),
+                       logging=False,
+                       databases=not DEBUG,
+                       test_runner=False)
+
+# TinyMCE
+TINYMCE_DEFAULT_CONFIG={
+        "theme": "silver",
+        "height": 500,
+        "menubar": False,
+        "plugins": "advlist,autolink,lists,link,image,charmap,print,preview,anchor,"
+        "searchreplace,visualblocks,code,fullscreen,insertdatetime,media,table,paste,"
+        "code,help,wordcount",
+        "toolbar": "undo redo | formatselect | "
+        "bold italic backcolor | alignleft aligncenter "
+        "alignright alignjustify | bullist numlist outdent indent | "
+        "removeformat | code | help",
+    }

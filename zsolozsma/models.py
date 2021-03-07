@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from tinymce.models import HTMLField
 from django.utils.text import slugify
 import secrets
 from zsolozsma import youtube
@@ -102,6 +103,7 @@ class Liturgy(models.Model):
                             max_length=50,
                             blank=False,
                             unique=True)
+    text = HTMLField('Szöveg', blank=True, null=True)
     text_url_pattern = models.CharField(
         'Szöveg URL sablon',
         max_length=300,
