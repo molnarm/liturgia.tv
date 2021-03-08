@@ -7,6 +7,7 @@ from django.db.models.functions import Concat
 class EventScheduleInline(admin.TabularInline):
     model = zsolozsma.models.EventSchedule
     readonly_fields = ('hash', )
+    ordering = ('valid_from', 'valid_to', 'day_of_week', 'time')
 
 
 @admin.register(zsolozsma.models.Event)
@@ -38,6 +39,7 @@ class EventAdmin(admin.ModelAdmin):
 
 class EventInline(admin.TabularInline):
     model = zsolozsma.models.Event
+    ordering = ('name', )
 
 
 @admin.register(zsolozsma.models.City)
@@ -68,6 +70,7 @@ class LocationAdmin(admin.ModelAdmin):
 class LiturgyTextInline(admin.TabularInline):
     model = zsolozsma.models.LiturgyText
     extra = 30
+    ordering = ('date', )
 
     def get_queryset(self, request):
         today = timezone.localtime().date()
@@ -134,7 +137,7 @@ class BroadcastAdmin(admin.ModelAdmin):
         'date', 'schedule__time', 'schedule__event__location__city__name',
         'schedule__event__location__name'
     ]
-    
+
     def get_queryset(self, request):
         today = timezone.localtime().date()
         qs = super().get_queryset(request)
