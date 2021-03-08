@@ -10,6 +10,7 @@ from enum import IntEnum
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
+from django.urls import reverse
 
 from zsolozsma import models, youtube
 
@@ -225,6 +226,9 @@ def __get_or_create_broadcast(schedule, date):
                             event.liturgy.text_url_pattern)
                     except ValueError:
                         pass
+                elif (event.liturgy.text):
+                    text_url = reverse('liturgy-text',
+                                       args=[event.liturgy.slug])
 
         if (text_url):
             broadcast.text_url = text_url
@@ -239,6 +243,9 @@ def __check_iframe_support(url):
         return False
 
     try:
+        if (not urllib.parse.urlparse(url).netloc):
+            return True
+
         request = urllib.request.Request(url)
         response = urllib.request.urlopen(request)
         frame_header = response.getheader('X-Frame-Options')
