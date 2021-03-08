@@ -9,7 +9,7 @@ function isLightTheme() {
 function setTheme(light, triggerEvent) {
     document.getElementById('css-light').rel = light ? 'stylesheet' : 'stylesheet alternate';
     document.getElementById('css-dark').rel = light ? 'stylesheet alternate' : 'stylesheet';
-    document.cookie = "theme=" + (light ? 'light' : 'dark') + "; max-age=" + 30 * 86400 + "; path=/; samesite=strict";
+    document.cookie = "theme=" + (light ? 'light' : 'dark') + "; max-age=" + 30 * 86400 + "; path=/; samesite=lax";
 
     if (triggerEvent)
         triggerThemeChange(light);
