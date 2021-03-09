@@ -239,6 +239,15 @@ a:hover,
     height: 100%;
 }
 
+.gutter {
+    background: transparent;
+    transition: background-color 0.5s ease;
+}
+
+.gutter:hover {
+    background: #b58f04;
+}
+
 .gutter.gutter-horizontal {
     cursor: col-resize;
 }
