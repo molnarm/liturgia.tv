@@ -49,10 +49,15 @@ def location(request, city, location):
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
 
-    return render(request, 'zsolozsma/location.html', {
-        'location': location_object,
-        'schedule': schedule
-    })
+    return render(
+        request, 'zsolozsma/location.html', {
+            'location': location_object,
+            'schedule': schedule,
+            'editor': {
+                'model': models.Location._meta,
+                'id': location_object.pk
+            }
+        })
 
 
 def liturgy(request, liturgy):
@@ -63,10 +68,15 @@ def liturgy(request, liturgy):
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
 
-    return render(request, 'zsolozsma/liturgy.html', {
-        'liturgy': liturgy_object,
-        'schedule': schedule
-    })
+    return render(
+        request, 'zsolozsma/liturgy.html', {
+            'liturgy': liturgy_object,
+            'schedule': schedule,
+            'editor': {
+                'model': models.Liturgy._meta,
+                'id': liturgy_object.pk
+            }
+        })
 
 
 def city(request, city):
@@ -76,10 +86,15 @@ def city(request, city):
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
 
-    return render(request, 'zsolozsma/city.html', {
-        'city': city_object,
-        'schedule': schedule
-    })
+    return render(
+        request, 'zsolozsma/city.html', {
+            'city': city_object,
+            'schedule': schedule,
+            'editor': {
+                'model': models.City._meta,
+                'id': city_object.pk
+            }
+        })
 
 
 def denomination(request, denomination, city=None):
@@ -92,10 +107,15 @@ def denomination(request, denomination, city=None):
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
 
-    return render(request, 'zsolozsma/denomination.html', {
-        'denomination': denomination_object,
-        'schedule': schedule
-    })
+    return render(
+        request, 'zsolozsma/denomination.html', {
+            'denomination': denomination_object,
+            'schedule': schedule,
+            'editor': {
+                'model': models.Denomination._meta,
+                'id': denomination_object.pk
+            }
+        })
 
 
 def miserend(request, id):
@@ -106,18 +126,29 @@ def miserend(request, id):
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
 
-    return render(request, 'zsolozsma/location.html', {
-        'location': location_object,
-        'schedule': schedule
-    })
+    return render(
+        request, 'zsolozsma/location.html', {
+            'location': location_object,
+            'schedule': schedule,
+            'editor': {
+                'model': models.Location._meta,
+                'id': location_object.pk
+            }
+        })
 
 
 def liturgytext(request, liturgy):
     liturgy_object = get_object_or_404(models.Liturgy, slug=liturgy)
 
     if (liturgy_object.text):
-        return render(request, 'zsolozsma/liturgytext.html',
-                      {'liturgy': liturgy_object})
+        return render(
+            request, 'zsolozsma/liturgytext.html', {
+                'liturgy': liturgy_object,
+                'editor': {
+                    'model': models.Liturgy._meta,
+                    'id': liturgy_object.pk
+                }
+            })
 
     return Http404('Nincs ilyen szöveg.')
 

@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from zsolozsma import views
@@ -27,6 +28,9 @@ urlpatterns = [
 
     # HTML szerkesztés
     path('tinymce/', include('tinymce.urls')),
+
+    # Admin
+    path('admin/', admin.site.urls),
 
     # Közvetítés
     re_path(r'^kozvetites/(?P<hash>[\w]+)/(?P<date>\d{4}-\d{2}-\d{2})/$', views.broadcast, name='broadcast'),

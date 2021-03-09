@@ -19,7 +19,11 @@
 
 <body>
 <div class="content">
-{{ liturgy.text | safe }}
+    {% if editor and user.is_authenticated %}
+        {% load admin_urls %}
+        <i><a href="{% url editor.model|admin_urlname:'change' editor.id %}" title="Szerkesztés">Szerkesztés &raquo;</a></i>
+    {% endif %}
+    {{ liturgy.text | safe }}
 </div>
 </body>
 </html>
