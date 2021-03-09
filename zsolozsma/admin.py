@@ -74,7 +74,7 @@ class LocationAdmin(admin.ModelAdmin):
     city_name.short_description = 'Település'
     city_name.admin_order_field = 'city__name'
 
-    list_display = ('city_name', 'name')
+    list_display = ('city_name', 'name', 'last_checked')
     list_display_links = ('name', )
     ordering = ['city__name', 'name']
     list_filter = ('city', )

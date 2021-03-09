@@ -77,6 +77,11 @@ class Location(models.Model):
         help_text=
         'A helyszín azonosítója a miserend.hu-n. Ha megadod, ott is megjelennek a közvetítések.'
     )
+    last_checked = models.DateField('Utoljára ellenőrizve',
+                                    auto_now=False,
+                                    auto_now_add=False,
+                                    blank=True,
+                                    null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
