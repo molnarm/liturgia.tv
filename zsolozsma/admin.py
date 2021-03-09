@@ -14,9 +14,22 @@ class EventScheduleInline(admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     readonly_fields = ('location', )
     model = zsolozsma.models.Event
+
+    def get_fields(self, request, obj=None):
+        readonly_fields = self.get_readonly_fields(request, obj)
+        all_fields = super().get_fields(request, obj)
+        return readonly_fields + tuple(
+            [item for item in all_fields if item not in readonly_fields])
+
     inlines = [
         EventScheduleInline,
     ]
+
+    def azonosito(self, event):
+        return event.pk
+
+    azonosito.short_description = 'Azonosító'
+    azonosito.admin_order_field = 'pk'
 
     def location_name(self, event):
         return event.location.city.name + ', ' + event.location.name
@@ -31,8 +44,8 @@ class EventAdmin(admin.ModelAdmin):
     liturgy_name.short_description = 'Szertartás'
     liturgy_name.admin_order_field = 'liturgy__name'
 
-    list_display = ('pk', 'location_name', 'liturgy_name')
-    list_display_links = ('pk', )
+    list_display = ('azonosito', 'location_name', 'liturgy_name')
+    list_display_links = ('azonosito', )
     ordering = ['location__city__name', 'location__name', 'liturgy__name']
     list_filter = ('liturgy__denomination', 'location__city')
 
