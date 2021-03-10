@@ -1,9 +1,5 @@
 <div class="nav">
     <a class="right" href="#" onclick="javascript:toggleThemes()" title="Világos/sötét színek cseréje"><span class="material-icons">&#xe427;</span></a>
-    {% if editor and user.is_authenticated %}
-        {% load admin_urls %}
-        <a class="right" href="{% url editor.model|admin_urlname:'change' editor.id %}" title="Szerkesztés"><span class="material-icons">&#xe3c9;</span></a>
-    {% endif %}
     <ul>
         <li><a href="{% url 'home' %}"><span class="material-icons">&#xe88a;</span><span class="title">Kezdőlap</span></a></li>
         <li><a href="{% url 'search' %}"><span class="material-icons">&#xe8b6;</span><span class="title">Keresés</span></a></li>

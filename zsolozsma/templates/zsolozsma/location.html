@@ -3,7 +3,12 @@
 {% block ogtitle %}Közvetítések - {{ location.city.name }}, {{ location.name }}{% endblock %}
 {% block content %}
 <div class="location">
-    <h1>{{ location.city.name }}, {{ location.name }}</h1>
+    <h1>{{ location.city.name }}, {{ location.name }}
+    {% if editor and user.is_authenticated %}
+        {% load admin_urls %}
+        &nbsp;<a href="{% url editor.model|admin_urlname:'change' editor.id %}" title="Szerkesztés"><span class="material-icons">&#xe3c9;</span></a>
+    {% endif %}
+    </h1>
     <p>{{ location.fullname }}</p>
     {% if location.homepage %}
     <a href="{{ location.homepage }}">{{ location.homepage }}</a>

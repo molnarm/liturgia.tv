@@ -3,7 +3,12 @@
 {% block ogtitle %}Közvetítések - {{ liturgy.name }}{% endblock %}
 {% block content %}
 <div class="liturgy">
-    <h1>{{ liturgy.name }}</h1>
+    <h1>{{ liturgy.name }}
+    {% if editor and user.is_authenticated %}
+        {% load admin_urls %}
+        &nbsp;<a href="{% url editor.model|admin_urlname:'change' editor.id %}" title="Szerkesztés"><span class="material-icons">&#xe3c9;</span></a>
+    {% endif %}
+    </h1>
     <p>{{ liturgy.description }}</p>
 </div>
 {% include 'zsolozsma/snippets/schedule.html' with show_city=True show_location=True %}
