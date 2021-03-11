@@ -88,7 +88,7 @@ class Location(models.Model):
         super(Location, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "%s (%s)" % (self.name, self.city.name)
+        return "%s, %s" % (self.name, self.city.name)
 
     class Meta:
         verbose_name = 'Helyszín'

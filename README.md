@@ -27,8 +27,6 @@ A projekt keretet biztosít ahhoz, hogy egyházi szertartások közvetítéseit 
 > _(84. zsoltár)_
 
 
-## Fejlesztőknek
+## Fejlesztők, tartalomkezelők
 
-[Adatmodell](https://github.com/molnarm/liturgia.tv/wiki/Adatmodell)
-
-[API](https://github.com/molnarm/liturgia.tv/wiki/API)
+Irány a [wiki](https://github.com/molnarm/liturgia.tv/wiki/) &raquo;
