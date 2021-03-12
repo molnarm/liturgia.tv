@@ -2,28 +2,56 @@ from django.contrib import admin
 import zsolozsma.models
 from django.utils import timezone
 from django.db.models.functions import Concat
+from django.urls import reverse
+from django.utils.html import format_html
+
+
+class LiturgiaTvAdmin(admin.ModelAdmin):
+    save_on_top = True
 
 
 class EventScheduleInline(admin.TabularInline):
     model = zsolozsma.models.EventSchedule
     readonly_fields = ('hash', )
     ordering = ('valid_from', 'valid_to', 'day_of_week', 'time')
+    fields = ('day_of_week', 'time', 'valid_from', 'valid_to',
+              'youtube_channel', 'video_url', 'text_url')
 
 
 @admin.register(zsolozsma.models.Event)
-class EventAdmin(admin.ModelAdmin):
-    readonly_fields = ('location', )
-    model = zsolozsma.models.Event
-
-    def get_fields(self, request, obj=None):
-        readonly_fields = self.get_readonly_fields(request, obj)
-        all_fields = super().get_fields(request, obj)
-        return readonly_fields + tuple(
-            [item for item in all_fields if item not in readonly_fields])
+class EventAdmin(LiturgiaTvAdmin):
+    def has_add_permission(self, request, obj=None):
+        # Eseményt nem lehet magában létrehozni, csak helyszínnél
+        return False
 
     inlines = [
         EventScheduleInline,
     ]
+
+    def location_link(self, event):
+        return format_html(
+            '<a href="{}">{}</a>',
+            reverse("admin:zsolozsma_location_change",
+                    args=(event.location.id, )), event.location)
+
+    location_link.short_description = 'Helyszín'
+
+    def liturgy_link(self, event):
+        return format_html(
+            '<a href="{}">{}</a>',
+            reverse("admin:zsolozsma_liturgy_change",
+                    args=(event.liturgy.id, )), event.liturgy)
+
+    liturgy_link.short_description = 'Szertartás'
+
+    readonly_fields = ('location_link', 'liturgy_link')
+    fieldsets = ((None, {
+        'fields':
+        ('location_link', 'liturgy_link', 'name', 'duration', 'is_active')
+    }), ('Speciális esetek', {
+        'fields': ('youtube_channel', 'video_url', 'text_url'),
+        'classes': ('collapse', )
+    }))
 
     def azonosito(self, event):
         return event.pk
@@ -53,16 +81,17 @@ class EventAdmin(admin.ModelAdmin):
 class EventInline(admin.TabularInline):
     model = zsolozsma.models.Event
     ordering = ('name', )
+    show_change_link = True
 
 
 @admin.register(zsolozsma.models.City)
-class CityAdmin(admin.ModelAdmin):
+class CityAdmin(LiturgiaTvAdmin):
     readonly_fields = ('slug', )
     ordering = ['name']
 
 
 @admin.register(zsolozsma.models.Location)
-class LocationAdmin(admin.ModelAdmin):
+class LocationAdmin(LiturgiaTvAdmin):
     readonly_fields = ('slug', )
     inlines = [
         EventInline,
@@ -92,7 +121,7 @@ class LiturgyTextInline(admin.TabularInline):
 
 
 @admin.register(zsolozsma.models.Liturgy)
-class LiturgyAdmin(admin.ModelAdmin):
+class LiturgyAdmin(LiturgiaTvAdmin):
     readonly_fields = ('slug', )
     inlines = [
         LiturgyTextInline,
@@ -111,15 +140,16 @@ class LiturgyAdmin(admin.ModelAdmin):
 
 
 @admin.register(zsolozsma.models.Denomination)
-class DenominationAdmin(admin.ModelAdmin):
+class DenominationAdmin(LiturgiaTvAdmin):
     readonly_fields = ('slug', )
     ordering = ['name']
 
 
 @admin.register(zsolozsma.models.Broadcast)
-class BroadcastAdmin(admin.ModelAdmin):
-    def get_readonly_fields(self, request, obj=None):
-        return self.fields or [f.name for f in self.model._meta.fields]
+class BroadcastAdmin(LiturgiaTvAdmin):
+    def has_add_permission(self, request, obj=None):
+        # Közvetítést nem lehet kézzel létrehozni
+        return False
 
     def location_name(self, broadcast):
         return broadcast.schedule.event.location.city.name + ', ' + broadcast.schedule.event.location.name
@@ -143,6 +173,11 @@ class BroadcastAdmin(admin.ModelAdmin):
 
     def hash(self, broadcast):
         return broadcast.schedule.hash
+
+    readonly_fields = ('hash', 'location_name', 'liturgy_name', 'datetime',
+                       'video_url', 'video_youtube_channel', 'video_iframe',
+                       'text_url', 'text_iframe')
+    fields = readonly_fields
 
     list_display = ('hash', 'datetime', 'location_name', 'liturgy_name')
     list_display_links = ('datetime', )
