@@ -117,7 +117,7 @@ class BroadcastTests(TestCase):
         schedule2 = EventSchedule.objects.create(
             event=event1, time=now.time(), video_url='https://scheduleurl')
         schedule3 = EventSchedule.objects.create(
-            event=event2, time=now.time(), video_url='https://scheduleurl')
+            event=event1, time=now.time())
         schedule4 = EventSchedule.objects.create(event=event2, time=now.time())
         schedule5 = EventSchedule.objects.create(event=event3, time=now.time())
         schedule6 = EventSchedule.objects.create(event=event4, time=now.time())
@@ -129,15 +129,15 @@ class BroadcastTests(TestCase):
         self.assertIn('schedulechannel', broadcast.video_embed_url)
         self.assertTrue(broadcast.video_only)
 
-        # 2. The YouTube channel of the event
+        # 2. The video url in the schedule item
         broadcast = queries.get_broadcast(schedule2, now.date())
-        self.assertIn('eventchannel', broadcast.video_embed_url)
-        self.assertTrue(broadcast.video_only)
-
-        # 3. The video url in the schedule item
-        broadcast = queries.get_broadcast(schedule3, now.date())
         self.assertEqual('https://scheduleurl', broadcast.video_embed_url)
         self.assertFalse(broadcast.video_only)
+
+        # 3. The YouTube channel of the event
+        broadcast = queries.get_broadcast(schedule3, now.date())
+        self.assertIn('eventchannel', broadcast.video_embed_url)
+        self.assertTrue(broadcast.video_only)
 
         # 4. The video url in the event
         broadcast = queries.get_broadcast(schedule4, now.date())
