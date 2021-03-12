@@ -54,7 +54,7 @@ class ScheduleItem(object):
         self.city_name = city.name
         self.location_slug = location.slug
         self.location_name = location.name
-        self.duration = event.duration
+        self.duration = schedule.duration
 
         self.state = get_broadcast_status(schedule, date)
         self.style = self.__get_style()
@@ -135,7 +135,7 @@ def get_broadcast_status(schedule, date):
     difference = now - event_time
     minutes = difference.total_seconds() / 60
 
-    duration = schedule.event.duration or 60
+    duration = schedule.duration
 
     if (minutes < -TIMEDELTA_TOLERANCE):
         return BroadcastState.Future  # még több, mint 15 perc a kezdésig

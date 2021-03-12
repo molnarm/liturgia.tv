@@ -108,6 +108,11 @@ class Liturgy(models.Model):
                             max_length=50,
                             blank=False,
                             unique=True)
+    duration = models.IntegerField(
+        'Időtartam (perc)',
+        blank=False,
+        null=True,
+        help_text='Szokásos időtartam, egyes helyszíneken lehet eltérő.')
     text = HTMLField('Szöveg', blank=True, null=True)
     text_url_pattern = models.CharField(
         'Szöveg URL sablon',
@@ -232,6 +237,10 @@ class EventSchedule(models.Model):
         help_text='Ha más, mint a szertartás aznapi szokásos szövege.')
     valid_from = models.DateField('Érvényesség kezdete', null=True, blank=True)
     valid_to = models.DateField('Érvényesség vége', null=True, blank=True)
+
+    @property
+    def duration(self):
+        return self.event.duration or self.event.liturgy.duration or 60
 
     def __str__(self):
         date_str = EventSchedule.Weekdays(self.day_of_week).name

@@ -46,10 +46,9 @@ class EventAdmin(LiturgiaTvAdmin):
 
     readonly_fields = ('location_link', 'liturgy_link')
     fieldsets = ((None, {
-        'fields':
-        ('location_link', 'liturgy_link', 'name', 'duration', 'is_active')
+        'fields': ('location_link', 'liturgy_link', 'name', 'is_active')
     }), ('Speciális esetek', {
-        'fields': ('youtube_channel', 'video_url', 'text_url'),
+        'fields': ('duration', 'youtube_channel', 'video_url', 'text_url'),
         'classes': ('collapse', )
     }))
 
