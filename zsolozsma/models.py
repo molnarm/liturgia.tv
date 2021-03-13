@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from tinymce.models import HTMLField
 from django.utils.text import slugify
 import secrets
-from zsolozsma import youtube
+from zsolozsma import facebook, youtube
 
 
 class Denomination(models.Model):
@@ -314,6 +314,8 @@ class Broadcast(models.Model):
     def get_video_embed_url(self):
         if (self.video_youtube_channel):
             return youtube.get_embed(self.video_youtube_channel)
+        elif facebook.is_facebook(self.video_url):
+            return facebook.get_embed_url(self.video_url)
         else:
             return self.video_url
 
@@ -324,4 +326,5 @@ class Broadcast(models.Model):
             return self.video_url
 
     def is_16_9(self):
-        return bool(self.video_youtube_channel)
+        return bool(self.video_youtube_channel
+                    or facebook.is_facebook(self.video_url))

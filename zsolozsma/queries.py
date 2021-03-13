@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.urls import reverse
 
-from zsolozsma import models, youtube
+from zsolozsma import models
 
 SCHEDULE_FUTURE_DAYS = os.getenv('SCHEDULE_FUTURE_DAYS', 3)
 TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
