@@ -111,7 +111,8 @@ class Liturgy(models.Model):
     duration = models.IntegerField(
         'Időtartam (perc)',
         blank=False,
-        null=True,
+        null=False,
+        default=60,
         help_text='Szokásos időtartam, egyes helyszíneken lehet eltérő.')
     text = HTMLField('Szöveg', blank=True, null=True)
     text_url_pattern = models.CharField(
@@ -240,7 +241,7 @@ class EventSchedule(models.Model):
 
     @property
     def duration(self):
-        return self.event.duration or self.event.liturgy.duration or 60
+        return self.event.duration or self.event.liturgy.duration
 
     def __str__(self):
         date_str = EventSchedule.Weekdays(self.day_of_week).name
