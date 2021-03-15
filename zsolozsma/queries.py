@@ -81,7 +81,7 @@ def get_schedule(location_slug=None,
              [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
     scheduleQuery = models.EventSchedule.objects\
-        .select_related('event', 'event__location', 'event__location__city')\
+        .select_related('event', 'event__location', 'event__location__city', 'event__liturgy')\
         .filter(event__is_active=True, event__location__is_active=True)\
         .filter(Q(valid_from__lte=validity_end)|Q(valid_from=None))\
         .filter(Q(valid_to__gte=today)|Q(valid_to=None))
@@ -150,14 +150,15 @@ def get_broadcast_status(schedule, date):
 
 
 class BroadcastItem(object):
-    def __init__(self, event, broadcast):
+    def __init__(self, schedule, broadcast):
+        event = schedule.event
+
         self.event_name = event.name
         self.city_name = event.location.city.name
         self.location_name = event.location.name
         self.liturgy_name = event.liturgy.name
 
-        self.starttime = datetime.combine(broadcast.date,
-                                          broadcast.schedule.time)
+        self.starttime = datetime.combine(broadcast.date, schedule.time)
         self.starttime_label = timezone.get_current_timezone().localize(
             self.starttime)
 
@@ -174,20 +175,20 @@ class BroadcastItem(object):
 def get_broadcast(schedule, date):
     broadcast = __get_or_create_broadcast(schedule, date)
 
-    broadcast_item = BroadcastItem(schedule.event, broadcast)
+    broadcast_item = BroadcastItem(schedule, broadcast)
 
     return broadcast_item
 
 
 def __get_or_create_broadcast(schedule, date):
-    event = schedule.event
-
     try:
         broadcast = models.Broadcast.objects.get(schedule=schedule, date=date)
     except ObjectDoesNotExist:
         broadcast = models.Broadcast()
         broadcast.schedule = schedule
         broadcast.date = date
+
+    event = schedule.event
 
     if (not broadcast.get_video_embed_url()):
         if (schedule.youtube_channel):

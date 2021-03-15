@@ -40,9 +40,10 @@ def info(request):
 
 
 def location(request, city, location):
-    location_object = get_object_or_404(models.Location,
-                                        city__slug=city,
-                                        slug=location)
+    location_object = get_object_or_404(
+        models.Location.objects.select_related('city'),
+        city__slug=city,
+        slug=location)
 
     schedule = queries.get_schedule(city_slug=city, location_slug=location)
 
@@ -154,7 +155,11 @@ def liturgytext(request, liturgy):
 
 
 def broadcast(request, hash, date):
-    schedule_object = get_object_or_404(models.EventSchedule, hash=hash)
+    schedule_object = get_object_or_404(
+        models.EventSchedule.objects.select_related('event', 'event__location',
+                                                    'event__location__city',
+                                                    'event__liturgy'),
+        hash=hash)
     date = datetime.strptime(date, '%Y-%m-%d').date()
 
     broadcast = queries.get_broadcast(schedule_object, date)
