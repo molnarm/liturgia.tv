@@ -76,6 +76,10 @@ class EventAdmin(LiturgiaTvAdmin):
     ordering = ['location__city__name', 'location__name', 'liturgy__name']
     list_filter = ('liturgy__denomination', 'location__city')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('location', 'location__city', 'liturgy')
+
 
 class EventInline(admin.TabularInline):
     model = zsolozsma.models.Event
@@ -107,6 +111,10 @@ class LocationAdmin(LiturgiaTvAdmin):
     ordering = ['city__name', 'name']
     list_filter = ('city', )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('city')
+
 
 class LiturgyTextInline(admin.TabularInline):
     model = zsolozsma.models.LiturgyText
@@ -136,6 +144,10 @@ class LiturgyAdmin(LiturgiaTvAdmin):
     list_display_links = ('name', )
     ordering = ['denomination__name', 'name']
     list_filter = ('denomination', )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('denomination')
 
 
 @admin.register(zsolozsma.models.Denomination)
@@ -188,4 +200,5 @@ class BroadcastAdmin(LiturgiaTvAdmin):
     def get_queryset(self, request):
         today = timezone.localtime().date()
         qs = super().get_queryset(request)
-        return qs.filter(date__gte=today)
+        return qs.select_related('schedule__event__location','schedule__event__location__city', 'schedule__event__liturgy')\
+            .filter(date__gte=today)
