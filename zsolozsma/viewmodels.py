@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.utils import timezone
-from zsolozsma import queries
+from zsolozsma import queries, youtube
 
 
 class BroadcastItem(object):
@@ -20,10 +20,15 @@ class BroadcastItem(object):
         self.text_url = broadcast.text_url
         self.text_iframe = broadcast.text_iframe
 
+        is_16_9 = broadcast.video_youtube_channel or broadcast.video_is_facebook(
+        )
+
         self.video_embed_url = broadcast.get_video_embed_url()
-        self.video_link_url = broadcast.get_video_link_url()
-        self.video_embedded = broadcast.video_iframe or broadcast.is_16_9()
-        self.video_16_9 = broadcast.is_16_9()
+        self.video_link_url = youtube.get_link(
+            broadcast.video_youtube_channel
+        ) if broadcast.video_youtube_channel else broadcast.video_url
+        self.video_embedded = broadcast.video_iframe or is_16_9
+        self.video_16_9 = is_16_9
         self.video_facebook = broadcast.video_is_facebook()
 
 

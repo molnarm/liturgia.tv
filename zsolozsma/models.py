@@ -319,14 +319,5 @@ class Broadcast(models.Model):
         else:
             return self.video_url
 
-    def get_video_link_url(self):
-        if (self.video_youtube_channel):
-            return youtube.get_link(self.video_youtube_channel)
-        else:
-            return self.video_url
-
-    def is_16_9(self):
-        return bool(self.video_youtube_channel or self.video_is_facebook())
-
     def video_is_facebook(self):
         return facebook.is_facebook(self.video_url)
