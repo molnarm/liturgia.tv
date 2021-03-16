@@ -4,12 +4,12 @@
 {% endblock %}
 {% block content %}
 <div class="broadcast 
-    {% if broadcast.video_iframe %} with-video{% else %} no-video{%endif%}
-    {% if broadcast.video_only %} video-16-9{% endif %}
+    {% if broadcast.video_embedded %} with-video{% else %} no-video{%endif%}
+    {% if broadcast.video_16_9 %} video-16-9{% endif %}
     {% if broadcast.has_text and broadcast.text_iframe %} with-text{% else %} no-text{% endif %}
 ">
-    <div class="video {% if broadcast.video_iframe %} present{% else %} missing{%endif%}">
-        {% if broadcast.video_iframe %}        
+    <div class="video {% if broadcast.video_embedded %} present{% else %} missing{%endif%}">
+        {% if broadcast.video_embedded %} 
             <div class="video-wrapper">
                 <iframe src="{{ broadcast.video_embed_url }}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>

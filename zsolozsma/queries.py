@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.urls import reverse
 
-from zsolozsma import models, youtube
+from zsolozsma import models, youtube, viewmodels
 
 SCHEDULE_FUTURE_DAYS = os.getenv('SCHEDULE_FUTURE_DAYS', 3)
 TIMEDELTA_TOLERANCE = os.getenv('TIMEDELTA_TOLERANCE', 15)
@@ -25,48 +25,6 @@ class BroadcastState(IntEnum):
     Live = 3,
     Recent = 4,
     Past = 5
-
-
-class ScheduleItem(object):
-    name = None
-    schedule_hash = None
-    date = None
-    time = None
-    city_slug = None
-    city_name = None
-    location_slug = None
-    location_name = None
-    duration = None
-
-    state = None
-    style = None
-
-    def __init__(self, schedule, date):
-        event = schedule.event
-        location = event.location
-        city = location.city
-
-        self.name = event.name
-        self.schedule_hash = schedule.hash
-        self.date = date
-        self.time = schedule.time
-        self.city_slug = city.slug
-        self.city_name = city.name
-        self.location_slug = location.slug
-        self.location_name = location.name
-        self.duration = schedule.duration
-
-        self.state = get_broadcast_status(schedule, date)
-        self.style = self.__get_style()
-
-    def __get_style(self):
-        if (self.state == BroadcastState.Live):
-            return 'live'
-        elif (self.state == BroadcastState.Upcoming
-              or self.state == BroadcastState.Recent):
-            return 'highlight'
-        else:
-            return 'disabled'
 
 
 def get_schedule(location_slug=None,
@@ -108,7 +66,7 @@ def get_schedule(location_slug=None,
 
     schedule = [
         scheduleItem for scheduleItem in [
-            ScheduleItem(eventSchedule, _date) for (_date, _day) in dates
+            viewmodels.ScheduleItem(eventSchedule, _date) for (_date, _day) in dates
             for eventSchedule in days[_day]
         ] if scheduleItem.state != BroadcastState.Past
         and scheduleItem.state != BroadcastState.Invalid
@@ -149,33 +107,10 @@ def get_broadcast_status(schedule, date):
         return BroadcastState.Past
 
 
-class BroadcastItem(object):
-    def __init__(self, schedule, broadcast):
-        event = schedule.event
-
-        self.event_name = event.name
-        self.city_name = event.location.city.name
-        self.location_name = event.location.name
-        self.liturgy_name = event.liturgy.name
-
-        self.starttime = datetime.combine(broadcast.date, schedule.time)
-        self.starttime_label = timezone.get_current_timezone().localize(
-            self.starttime)
-
-        self.has_text = bool(broadcast.text_url)
-        self.text_url = broadcast.text_url
-        self.text_iframe = broadcast.text_iframe
-
-        self.video_embed_url = broadcast.get_video_embed_url()
-        self.video_link_url = broadcast.get_video_link_url()
-        self.video_iframe = broadcast.video_iframe
-        self.video_only = broadcast.is_16_9()
-
-
 def get_broadcast(schedule, date):
     broadcast = __get_or_create_broadcast(schedule, date)
 
-    broadcast_item = BroadcastItem(schedule, broadcast)
+    broadcast_item = viewmodels.BroadcastItem(schedule, broadcast)
 
     return broadcast_item
 

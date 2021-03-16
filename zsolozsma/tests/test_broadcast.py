@@ -127,32 +127,32 @@ class BroadcastTests(TestCase):
         # 1. The YouTube channel of the schedule item
         broadcast = queries.get_broadcast(schedule1, now.date())
         self.assertIn('schedulechannel', broadcast.video_embed_url)
-        self.assertTrue(broadcast.video_only)
+        self.assertTrue(broadcast.video_16_9)
 
         # 2. The video url in the schedule item
         broadcast = queries.get_broadcast(schedule2, now.date())
         self.assertEqual('https://scheduleurl', broadcast.video_embed_url)
-        self.assertFalse(broadcast.video_only)
+        self.assertFalse(broadcast.video_16_9)
 
         # 3. The YouTube channel of the event
         broadcast = queries.get_broadcast(schedule3, now.date())
         self.assertIn('eventchannel', broadcast.video_embed_url)
-        self.assertTrue(broadcast.video_only)
+        self.assertTrue(broadcast.video_16_9)
 
         # 4. The video url in the event
         broadcast = queries.get_broadcast(schedule4, now.date())
         self.assertEqual('https://eventurl', broadcast.video_embed_url)
-        self.assertFalse(broadcast.video_only)
+        self.assertFalse(broadcast.video_16_9)
 
         # 5. The YouTube channel of the location
         broadcast = queries.get_broadcast(schedule5, now.date())
         self.assertIn('locationchannel', broadcast.video_embed_url)
-        self.assertTrue(broadcast.video_only)
+        self.assertTrue(broadcast.video_16_9)
 
         # 6. The video url of the location
         broadcast = queries.get_broadcast(schedule6, now.date())
         self.assertEqual('https://locationurl', broadcast.video_embed_url)
-        self.assertFalse(broadcast.video_only)
+        self.assertFalse(broadcast.video_16_9)
 
         # (7. Nothing)
         broadcast = queries.get_broadcast(schedule7, now.date())

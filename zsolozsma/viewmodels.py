@@ -1,0 +1,69 @@
+from datetime import datetime
+from django.utils import timezone
+from zsolozsma import queries
+
+
+class BroadcastItem(object):
+    def __init__(self, schedule, broadcast):
+        event = schedule.event
+
+        self.event_name = event.name
+        self.city_name = event.location.city.name
+        self.location_name = event.location.name
+        self.liturgy_name = event.liturgy.name
+
+        self.starttime = datetime.combine(broadcast.date, schedule.time)
+        self.starttime_label = timezone.get_current_timezone().localize(
+            self.starttime)
+
+        self.has_text = bool(broadcast.text_url)
+        self.text_url = broadcast.text_url
+        self.text_iframe = broadcast.text_iframe
+
+        self.video_embed_url = broadcast.get_video_embed_url()
+        self.video_link_url = broadcast.get_video_link_url()
+        self.video_embedded = broadcast.video_iframe or broadcast.is_16_9()
+        self.video_16_9 = broadcast.is_16_9()
+        self.video_facebook = broadcast.video_is_facebook()
+
+
+class ScheduleItem(object):
+    name = None
+    schedule_hash = None
+    date = None
+    time = None
+    city_slug = None
+    city_name = None
+    location_slug = None
+    location_name = None
+    duration = None
+
+    state = None
+    style = None
+
+    def __init__(self, schedule, date):
+        event = schedule.event
+        location = event.location
+        city = location.city
+
+        self.name = event.name
+        self.schedule_hash = schedule.hash
+        self.date = date
+        self.time = schedule.time
+        self.city_slug = city.slug
+        self.city_name = city.name
+        self.location_slug = location.slug
+        self.location_name = location.name
+        self.duration = schedule.duration
+
+        self.state = queries.get_broadcast_status(schedule, date)
+        self.style = self.__get_style()
+
+    def __get_style(self):
+        if (self.state == queries.BroadcastState.Live):
+            return 'live'
+        elif (self.state == queries.BroadcastState.Upcoming
+              or self.state == queries.BroadcastState.Recent):
+            return 'highlight'
+        else:
+            return 'disabled'
