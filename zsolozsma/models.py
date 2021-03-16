@@ -99,7 +99,7 @@ class Liturgy(models.Model):
     """Szertartás"""
 
     name = models.CharField('Név', max_length=100, blank=False, unique=True)
-    description = HTMLField('Leírás', max_length=500, blank=True)
+    description = HTMLField('Leírás', blank=True)
     denomination = models.ForeignKey("Denomination",
                                      verbose_name='Felekezet',
                                      on_delete=models.CASCADE,
