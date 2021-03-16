@@ -9,7 +9,10 @@
         &nbsp;<a href="{% url editor.model|admin_urlname:'change' editor.id %}" title="Szerkesztés"><span class="material-icons">&#xe3c9;</span></a>
     {% endif %}
     </h1>
-    <p>{{ liturgy.description }}</p>
+    <div class="description">
+    {{ liturgy.description | safe }}
+    {% if liturgy.text %}<p>A szertartás általános szövege <a href="{% url 'liturgy-text' liturgy.slug %}">itt</a> elérhető.</p>{% endif %}
+    </div>
 </div>
 {% include 'zsolozsma/snippets/schedule.html' with show_city=True show_location=True %}
 {% endblock %}

@@ -50,6 +50,7 @@ div {
 
 .information,
 .search,
+.liturgy,
 .table-container {
     max-width: 960px;
     margin: 50px auto;
@@ -58,6 +59,10 @@ div {
 
 .schedule {
     margin: 50px 0;
+}
+
+.liturgy .description {
+    text-align: justify;
 }
 
 .flex-table {
