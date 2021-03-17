@@ -238,6 +238,12 @@ class EventSchedule(models.Model):
         help_text='Ha más, mint a szertartás aznapi szokásos szövege.')
     valid_from = models.DateField('Érvényesség kezdete', null=True, blank=True)
     valid_to = models.DateField('Érvényesség vége', null=True, blank=True)
+    is_extraordinary = models.BooleanField(
+        'Rendkívüli esemény',
+        blank=False,
+        default=False,
+        help_text='Jelöld be, ha ez az esemény felülírja az aznapi miserendet.'
+    )
 
     @property
     def duration(self):

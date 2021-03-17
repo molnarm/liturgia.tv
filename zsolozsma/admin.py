@@ -15,7 +15,7 @@ class EventScheduleInline(admin.TabularInline):
     readonly_fields = ('hash', )
     ordering = ('valid_from', 'valid_to', 'day_of_week', 'time')
     fields = ('day_of_week', 'time', 'valid_from', 'valid_to',
-              'youtube_channel', 'video_url', 'text_url')
+              'is_extraordinary', 'youtube_channel', 'video_url', 'text_url')
 
 
 @admin.register(zsolozsma.models.Event)

@@ -42,7 +42,8 @@ def get_schedule(location_slug=None,
         .select_related('event', 'event__location', 'event__location__city', 'event__liturgy')\
         .filter(event__is_active=True, event__location__is_active=True)\
         .filter(Q(valid_from__lte=validity_end)|Q(valid_from=None))\
-        .filter(Q(valid_to__gte=today)|Q(valid_to=None))
+        .filter(Q(valid_to__gte=today)|Q(valid_to=None))\
+        .filter(day_of_week__in=[d[1] for d in dates])
 
     if (location_slug):
         scheduleQuery = scheduleQuery.filter(
@@ -59,15 +60,21 @@ def get_schedule(location_slug=None,
         scheduleQuery = scheduleQuery.filter(
             event__location__miserend_id=miserend_id)
 
-    scheduleQuery = scheduleQuery.filter(day_of_week__in=[d[1] for d in dates])
-    days = defaultdict(list)
+    extraordinary_events = [(item.day_of_week, item.event.location)
+                            for item in scheduleQuery if item.is_extraordinary]
+
+    daily_schedules = defaultdict(list)
     for scheduleItem in scheduleQuery:
-        days[scheduleItem.day_of_week].append(scheduleItem)
+        if (scheduleItem.is_extraordinary
+                or ((scheduleItem.day_of_week, scheduleItem.event.location)
+                    not in extraordinary_events)):
+            daily_schedules[scheduleItem.day_of_week].append(scheduleItem)
 
     schedule = [
         scheduleItem for scheduleItem in [
-            viewmodels.ScheduleItem(eventSchedule, _date) for (_date, _day) in dates
-            for eventSchedule in days[_day]
+            viewmodels.ScheduleItem(eventSchedule, _date)
+            for (_date, _day) in dates
+            for eventSchedule in daily_schedules[_day]
         ] if scheduleItem.state != BroadcastState.Past
         and scheduleItem.state != BroadcastState.Invalid
     ]

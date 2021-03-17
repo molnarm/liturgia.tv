@@ -107,6 +107,28 @@ class ScheduleTests(TestCase):
                                 ('Church A Liturgy 1', 'City 2'),
                                 ('Church A Liturgy 2', 'City 2')], schedule)
 
+    def test_is_extraordinary(self):
+        schedule11 = EventSchedule.objects.get(event__location=self.location1,
+                                               event__liturgy=self.liturgy1)
+        schedule11.is_extraordinary = True
+        schedule11.save()
+        schedule21 = EventSchedule.objects.get(event__location=self.location2,
+                                               event__liturgy=self.liturgy1)
+        schedule21.is_extraordinary = True
+        schedule21.save()
+        schedule22 = EventSchedule.objects.get(event__location=self.location2,
+                                               event__liturgy=self.liturgy2)
+        schedule22.is_extraordinary = True
+        schedule22.save()
+
+        schedule = queries.get_schedule()
+
+        self.__assert_schedule([('Church A Liturgy 1', 'City 1'),
+                                ('Church B Liturgy 1', 'City 1'),
+                                ('Church B Liturgy 2', 'City 1'),
+                                ('Church A Liturgy 1', 'City 2'),
+                                ('Church A Liturgy 2', 'City 2')], schedule)
+
     def test_is_active(self):
         self.location1.is_active = False
         self.location1.save()
