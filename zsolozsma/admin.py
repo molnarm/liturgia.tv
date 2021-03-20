@@ -10,81 +10,81 @@ class LiturgiaTvAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-class EventScheduleInline(admin.TabularInline):
+class EventInline(admin.TabularInline):
     model = zsolozsma.models.EventSchedule
     readonly_fields = ('hash', )
     ordering = ('valid_from', 'valid_to', 'day_of_week', 'time')
-    fields = ('day_of_week', 'time', 'valid_from', 'valid_to',
-              'is_extraordinary', 'youtube_channel', 'video_url', 'text_url')
+    fields = ('day_of_week', 'time', 'liturgy', 'name', 'valid_from',
+              'valid_to', 'is_extraordinary')
+    show_change_link = True
 
 
-@admin.register(zsolozsma.models.Event)
+@admin.register(zsolozsma.models.EventSchedule)
 class EventAdmin(LiturgiaTvAdmin):
     def has_add_permission(self, request, obj=None):
         # Eseményt nem lehet magában létrehozni, csak helyszínnél
         return False
 
-    inlines = [
-        EventScheduleInline,
-    ]
-
-    def location_link(self, event):
+    def location_link(self, schedule):
         return format_html(
             '<a href="{}">{}</a>',
             reverse("admin:zsolozsma_location_change",
-                    args=(event.location.id, )), event.location)
+                    args=(schedule.location.id, )), schedule.location)
 
     location_link.short_description = 'Helyszín'
 
-    def liturgy_link(self, event):
+    def liturgy_link(self, schedule):
         return format_html(
             '<a href="{}">{}</a>',
             reverse("admin:zsolozsma_liturgy_change",
-                    args=(event.liturgy.id, )), event.liturgy)
+                    args=(schedule.liturgy.id, )), schedule.liturgy)
 
     liturgy_link.short_description = 'Szertartás'
 
     readonly_fields = ('location_link', 'liturgy_link')
     fieldsets = ((None, {
-        'fields': ('location_link', 'liturgy_link', 'name', 'is_active')
-    }), ('Speciális esetek', {
-        'fields': ('duration', 'youtube_channel', 'video_url', 'text_url'),
+        'fields': ('location_link', 'liturgy_link', 'name', 'day_of_week',
+                   'time', 'duration')
+    }), ('Időszakos és rendkívüli események', {
+        'fields': ('valid_from', 'valid_to', 'is_extraordinary'),
+        'classes': ('collapse', )
+    }), ('Egyedi közvetítések', {
+        'fields': ('youtube_channel', 'video_url', 'text_url'),
         'classes': ('collapse', )
     }))
 
-    def azonosito(self, event):
-        return event.pk
+    def azonosito(self, schedule):
+        return schedule.pk
 
     azonosito.short_description = 'Azonosító'
     azonosito.admin_order_field = 'pk'
 
-    def location_name(self, event):
-        return event.location.city.name + ', ' + event.location.name
+    def location_name(self, schedule):
+        return schedule.location.city.name + ', ' + schedule.location.name
 
     location_name.short_description = 'Helyszín'
     location_name.admin_order_field = Concat('location__city__name',
                                              'location__name')
 
-    def liturgy_name(self, event):
-        return event.liturgy.name
+    def liturgy_name(self, schedule):
+        return schedule.liturgy.name
 
     liturgy_name.short_description = 'Szertartás'
     liturgy_name.admin_order_field = 'liturgy__name'
 
-    list_display = ('azonosito', 'location_name', 'liturgy_name')
+    list_display = ('azonosito', 'location_name', 'liturgy_name',
+                    'day_of_week', 'time', 'valid_from', 'valid_to',
+                    'is_extraordinary')
     list_display_links = ('azonosito', )
-    ordering = ['location__city__name', 'location__name', 'liturgy__name']
+    ordering = [
+        'location__city__name', 'location__name', 'day_of_week', 'time',
+        'valid_from', 'valid_to'
+    ]
     list_filter = ('liturgy__denomination', 'location__city')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.select_related('location', 'location__city', 'liturgy')
-
-
-class EventInline(admin.TabularInline):
-    model = zsolozsma.models.Event
-    ordering = ('name', )
-    show_change_link = True
 
 
 @admin.register(zsolozsma.models.City)
@@ -163,18 +163,17 @@ class BroadcastAdmin(LiturgiaTvAdmin):
         return False
 
     def location_name(self, broadcast):
-        return broadcast.schedule.event.location.city.name + ', ' + broadcast.schedule.event.location.name
+        return broadcast.schedule.location.city.name + ', ' + broadcast.schedule.location.name
 
     location_name.short_description = 'Helyszín'
-    location_name.admin_order_field = Concat(
-        'schedule__event__location__city__name',
-        'schedule__event__location__name')
+    location_name.admin_order_field = Concat('schedule__location__city__name',
+                                             'schedule__location__name')
 
     def liturgy_name(self, broadcast):
-        return broadcast.schedule.event.liturgy.name
+        return broadcast.schedule.liturgy.name
 
     liturgy_name.short_description = 'Szertartás'
-    liturgy_name.admin_order_field = 'schedule__event__liturgy__name'
+    liturgy_name.admin_order_field = 'schedule__liturgy__name'
 
     def datetime(self, broadcast):
         return str(broadcast.date) + ' ' + str(broadcast.schedule.time)
@@ -193,12 +192,12 @@ class BroadcastAdmin(LiturgiaTvAdmin):
     list_display = ('hash', 'datetime', 'location_name', 'liturgy_name')
     list_display_links = ('datetime', )
     ordering = [
-        'date', 'schedule__time', 'schedule__event__location__city__name',
-        'schedule__event__location__name'
+        'date', 'schedule__time', 'schedule__location__city__name',
+        'schedule__location__name'
     ]
 
     def get_queryset(self, request):
         today = timezone.localtime().date()
         qs = super().get_queryset(request)
-        return qs.select_related('schedule__event__location','schedule__event__location__city', 'schedule__event__liturgy')\
+        return qs.select_related('schedule__location','schedule__location__city', 'schedule__liturgy')\
             .filter(date__gte=today)

@@ -156,9 +156,9 @@ def liturgytext(request, liturgy):
 
 def broadcast(request, hash, date):
     schedule_object = get_object_or_404(
-        models.EventSchedule.objects.select_related('event', 'event__location',
-                                                    'event__location__city',
-                                                    'event__liturgy'),
+        models.EventSchedule.objects.select_related('location',
+                                                    'location__city',
+                                                    'liturgy'),
         hash=hash)
     date = datetime.strptime(date, '%Y-%m-%d').date()
 

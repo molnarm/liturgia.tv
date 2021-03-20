@@ -135,70 +135,30 @@ class Liturgy(models.Model):
         verbose_name_plural = 'Szertartások'
 
 
-class Event(models.Model):
-    """Közvetített esemény (adott szertartás egy adott helyen)"""
-
-    name = models.CharField(
-        'Név',
-        max_length=100,
-        blank=False,
-        help_text=
-        'A szertartás neve az adott helyen, ez fog megjelenni a listákban.')
+class EventSchedule(models.Model):
+    """Közvetített esemény (adott szertartás egy adott helyen, adott időpontban)"""
     location = models.ForeignKey("Location",
                                  verbose_name='Helyszín',
                                  on_delete=models.CASCADE,
-                                 blank=False)
+                                 blank=False,
+                                 null=False)
     liturgy = models.ForeignKey("Liturgy",
                                 verbose_name='Szertartás',
                                 on_delete=models.CASCADE,
-                                blank=False)
+                                blank=False,
+                                null=False)
+    name = models.CharField(
+        'Név',
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=
+        'Ha más, mint az esemény szokásos neve.')
     duration = models.IntegerField(
         'Időtartam (perc)',
         blank=True,
         null=True,
         help_text='Csak akkor kell kitölteni, ha eltér a szokásostól.')
-
-    youtube_channel = models.CharField(
-        'Egyedi YouTube csatorna ID',
-        max_length=24,
-        blank=True,
-        help_text=
-        'Csak akkor kell kitölteni, ha más, mint a helyszín szokásos csatornája.'
-    )
-    video_url = models.URLField(
-        'Egyedi URL a közvetítéshez',
-        max_length=500,
-        blank=True,
-        help_text=
-        'Csak akkor kell kitölteni, ha más, mint a helyszín szokásos közvetítési oldala.'
-    )
-    text_url = models.URLField(
-        'Egyedi szöveg URL',
-        max_length=500,
-        blank=True,
-        help_text=
-        'Csak akkor kell kitölteni, ha más, mint a szertartás aznapi szokásos szövege.'
-    )
-
-    is_active = models.BooleanField(
-        'Aktív',
-        blank=False,
-        default=True,
-        help_text='Vedd ki a pipát, ha az esemény határozatlan ideig szünetel.'
-    )
-
-    def __str__(self):
-        return "%s %s" % (self.location.name, self.name)
-
-    class Meta:
-        verbose_name = 'Esemény'
-        verbose_name_plural = 'Események'
-
-
-class EventSchedule(models.Model):
-    event = models.ForeignKey("Event",
-                              verbose_name="Esemény",
-                              on_delete=models.CASCADE)
 
     hash = models.CharField('URL hash', max_length=8, unique=True, null=True)
 
@@ -212,14 +172,14 @@ class EventSchedule(models.Model):
         vasárnap = 6
 
     day_of_week = models.IntegerField('Hét napja',
-                                      null=True,
-                                      blank=True,
+                                      null=False,
+                                      blank=False,
                                       choices=Weekdays.choices)
     time = models.TimeField('Kezdés ideje',
                             auto_now=False,
                             auto_now_add=False,
-                            null=True,
-                            blank=True)
+                            null=False,
+                            blank=False)
 
     youtube_channel = models.CharField(
         'Egyedi YouTube csatorna ID',
@@ -245,14 +205,11 @@ class EventSchedule(models.Model):
         help_text='Jelöld be, ha ez az esemény felülírja az aznapi miserendet.'
     )
 
-    @property
-    def duration(self):
-        return self.event.duration or self.event.liturgy.duration
-
     def __str__(self):
         date_str = EventSchedule.Weekdays(self.day_of_week).name
 
-        return "%s (%s %s)" % (self.event.name, date_str, self.time)
+        return "%s (%s, %s %s)" % (self.name or self.liturgy.name,
+                                   self.location.name, date_str, self.time)
 
     def save(self, *args, **kwargs):
         if (self.pk is None or self.hash is None):
@@ -261,8 +218,8 @@ class EventSchedule(models.Model):
         super(EventSchedule, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = 'Esemény időpont'
-        verbose_name_plural = 'Esemény időpontok'
+        verbose_name = 'Esemény'
+        verbose_name_plural = 'Események'
 
 
 class LiturgyText(models.Model):
@@ -313,8 +270,8 @@ class Broadcast(models.Model):
         verbose_name_plural = 'Közvetítések'
 
     def __str__(self):
-        event = self.schedule.event
-        return "%s %s %s %s" % (event.location.name, event.name, self.date,
+        return "%s %s %s %s" % (self.schedule.location.name,
+                                self.schedule.name, self.date,
                                 self.schedule.time)
 
     def get_video_embed_url(self):

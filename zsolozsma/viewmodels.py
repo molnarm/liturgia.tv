@@ -5,12 +5,10 @@ from zsolozsma import queries, youtube
 
 class BroadcastItem(object):
     def __init__(self, schedule, broadcast):
-        event = schedule.event
-
-        self.event_name = event.name
-        self.city_name = event.location.city.name
-        self.location_name = event.location.name
-        self.liturgy_name = event.liturgy.name
+        self.event_name = schedule.name or schedule.liturgy.name
+        self.city_name = schedule.location.city.name
+        self.location_name = schedule.location.name
+        self.liturgy_name = schedule.liturgy.name
 
         self.starttime = datetime.combine(broadcast.date, schedule.time)
         self.starttime_label = timezone.get_current_timezone().localize(
@@ -47,11 +45,10 @@ class ScheduleItem(object):
     style = None
 
     def __init__(self, schedule, date):
-        event = schedule.event
-        location = event.location
+        location = schedule.location
         city = location.city
 
-        self.name = event.name
+        self.name = schedule.name or schedule.liturgy.name
         self.schedule_hash = schedule.hash
         self.date = date
         self.time = schedule.time
@@ -59,7 +56,7 @@ class ScheduleItem(object):
         self.city_name = city.name
         self.location_slug = location.slug
         self.location_name = location.name
-        self.duration = schedule.duration
+        self.duration = schedule.duration or schedule.liturgy.duration
 
         self.state = queries.get_broadcast_status(schedule, date)
         self.style = self.__get_style()

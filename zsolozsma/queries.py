@@ -39,42 +39,39 @@ def get_schedule(location_slug=None,
              [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
 
     scheduleQuery = models.EventSchedule.objects\
-        .select_related('event', 'event__location', 'event__location__city', 'event__liturgy')\
-        .filter(event__is_active=True, event__location__is_active=True)\
+        .select_related('location', 'location__city', 'liturgy')\
+        .filter(location__is_active=True)\
         .filter(Q(valid_from__lte=validity_end)|Q(valid_from=None))\
         .filter(Q(valid_to__gte=today)|Q(valid_to=None))\
         .filter(day_of_week__in=[d[1] for d in dates])
 
     if (location_slug):
-        scheduleQuery = scheduleQuery.filter(
-            event__location__slug=location_slug)
+        scheduleQuery = scheduleQuery.filter(location__slug=location_slug)
     if (liturgy_slug):
-        scheduleQuery = scheduleQuery.filter(event__liturgy__slug=liturgy_slug)
+        scheduleQuery = scheduleQuery.filter(liturgy__slug=liturgy_slug)
     if (city_slug):
-        scheduleQuery = scheduleQuery.filter(
-            event__location__city__slug=city_slug)
+        scheduleQuery = scheduleQuery.filter(location__city__slug=city_slug)
     if (denomination_slug):
         scheduleQuery = scheduleQuery.filter(
-            event__liturgy__denomination__slug=denomination_slug)
+            liturgy__denomination__slug=denomination_slug)
     if (miserend_id):
-        scheduleQuery = scheduleQuery.filter(
-            event__location__miserend_id=miserend_id)
+        scheduleQuery = scheduleQuery.filter(location__miserend_id=miserend_id)
 
-    extraordinary_events = [(item.day_of_week, item.event.location)
+    extraordinary_events = [(item.day_of_week, item.location)
                             for item in scheduleQuery if item.is_extraordinary]
 
     daily_schedules = defaultdict(list)
     for scheduleItem in scheduleQuery:
         if (scheduleItem.is_extraordinary
-                or ((scheduleItem.day_of_week, scheduleItem.event.location)
+                or ((scheduleItem.day_of_week, scheduleItem.location)
                     not in extraordinary_events)):
             daily_schedules[scheduleItem.day_of_week].append(scheduleItem)
 
     schedule = [
         scheduleItem for scheduleItem in [
-            viewmodels.ScheduleItem(eventSchedule, _date)
+            viewmodels.ScheduleItem(event, _date)
             for (_date, _day) in dates
-            for eventSchedule in daily_schedules[_day]
+            for event in daily_schedules[_day]
         ] if scheduleItem.state != BroadcastState.Past
         and scheduleItem.state != BroadcastState.Invalid
     ]
@@ -100,7 +97,7 @@ def get_broadcast_status(schedule, date):
     difference = now - event_time
     minutes = difference.total_seconds() / 60
 
-    duration = schedule.duration
+    duration = schedule.duration or schedule.liturgy.duration
 
     if (minutes < -TIMEDELTA_TOLERANCE):
         return BroadcastState.Future  # még több, mint 15 perc a kezdésig
@@ -130,21 +127,15 @@ def __get_or_create_broadcast(schedule, date):
         broadcast.schedule = schedule
         broadcast.date = date
 
-    event = schedule.event
-
     if (not broadcast.get_video_embed_url()):
         if (schedule.youtube_channel):
             broadcast.video_youtube_channel = schedule.youtube_channel
         elif (schedule.video_url):
             broadcast.video_url = schedule.video_url
-        elif (event.youtube_channel):
-            broadcast.video_youtube_channel = event.youtube_channel
-        elif (event.video_url):
-            broadcast.video_url = event.video_url
-        elif (event.location.youtube_channel):
-            broadcast.video_youtube_channel = event.location.youtube_channel
+        elif (schedule.location.youtube_channel):
+            broadcast.video_youtube_channel = schedule.location.youtube_channel
         else:
-            broadcast.video_url = event.location.video_url
+            broadcast.video_url = schedule.location.video_url
 
         broadcast.video_iframe = __check_iframe_support(
             broadcast.get_video_embed_url())
@@ -154,24 +145,22 @@ def __get_or_create_broadcast(schedule, date):
         text_url = None
         if (schedule.text_url):
             text_url = schedule.text_url
-        elif (event.text_url):
-            text_url = event.text_url
         else:
             try:
                 liturgy_text = models.LiturgyText.objects.get(
-                    liturgy=event.liturgy, date=date)
+                    liturgy=schedule.liturgy, date=date)
                 if (liturgy_text):
                     text_url = liturgy_text.text_url
             except ObjectDoesNotExist:
-                if (event.liturgy.text_url_pattern):
+                if (schedule.liturgy.text_url_pattern):
                     try:
                         text_url = date.strftime(
-                            event.liturgy.text_url_pattern)
+                            schedule.liturgy.text_url_pattern)
                     except ValueError:
                         pass
-                elif (event.liturgy.text):
+                elif (schedule.liturgy.text):
                     text_url = reverse('liturgy-text',
-                                       args=[event.liturgy.slug])
+                                       args=[schedule.liturgy.slug])
 
         if (text_url):
             broadcast.text_url = text_url
