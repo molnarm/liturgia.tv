@@ -80,7 +80,7 @@ class EventAdmin(LiturgiaTvAdmin):
         'location__city__name', 'location__name', 'day_of_week', 'time',
         'valid_from', 'valid_to'
     ]
-    list_filter = ('liturgy__denomination', 'location__city')
+    list_filter = ('liturgy__denomination', 'location__city', 'liturgy')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

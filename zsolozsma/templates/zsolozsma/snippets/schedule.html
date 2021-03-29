@@ -8,7 +8,7 @@
         {% endifchanged %}
         <div class="flex-table row {% ifchanged item.date %}new-day{% endifchanged %}" role="row">
             <div class="flex-row" role="cell">
-                {{ item.time }}
+                {{ item.time | time:'G:i'}}
             </div>
             {%if show_city %}
             <div class="flex-row" role="cell">
