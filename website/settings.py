@@ -162,3 +162,5 @@ TINYMCE_DEFAULT_CONFIG={
         "alignright alignjustify | bullist numlist outdent indent | "
         "removeformat | link | code | help",
     }
+
+MESSAGE = os.getenv('MESSAGE')

@@ -3,6 +3,8 @@
 {% block content %}
 <h1>Közelgő közvetítések</h1>
 
+{% if message %}{{message|safe}}{% endif %}
+
 {% include 'zsolozsma/snippets/schedule.html' with show_city=True show_location=True %}
 
 {% endblock %}

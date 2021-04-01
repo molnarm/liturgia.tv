@@ -5,6 +5,7 @@ from django.urls import reverse
 from zsolozsma import models
 from zsolozsma import queries
 from datetime import datetime
+from django.conf import settings
 
 API_PARAMETER = 'json'
 
@@ -15,7 +16,10 @@ def home(request):
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
 
-    return render(request, "zsolozsma/home.html", {'schedule': schedule})
+    return render(request, "zsolozsma/home.html", {
+        'message': settings.MESSAGE,
+        'schedule': schedule
+    })
 
 
 def search(request):
