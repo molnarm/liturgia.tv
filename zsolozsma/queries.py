@@ -31,12 +31,13 @@ def get_schedule(location_slug=None,
                  liturgy_slug=None,
                  city_slug=None,
                  denomination_slug=None,
-                 miserend_id=None):
+                 miserend_id=None,
+                 days=SCHEDULE_FUTURE_DAYS):
 
     today = timezone.localtime().date()
-    validity_end = today + timedelta(days=SCHEDULE_FUTURE_DAYS)
-    dates = [(date, date.weekday()) for date in
-             [today + timedelta(days=i) for i in range(SCHEDULE_FUTURE_DAYS)]]
+    validity_end = today + timedelta(days=days)
+    dates = [(date, date.weekday())
+             for date in [today + timedelta(days=i) for i in range(days)]]
 
     scheduleQuery = models.EventSchedule.objects\
         .select_related('location', 'location__city', 'liturgy')\
@@ -69,8 +70,7 @@ def get_schedule(location_slug=None,
 
     schedule = [
         scheduleItem for scheduleItem in [
-            viewmodels.ScheduleItem(event, _date)
-            for (_date, _day) in dates
+            viewmodels.ScheduleItem(event, _date) for (_date, _day) in dates
             for event in daily_schedules[_day]
         ] if scheduleItem.state != BroadcastState.Past
         and scheduleItem.state != BroadcastState.Invalid

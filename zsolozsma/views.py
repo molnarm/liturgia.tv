@@ -49,7 +49,9 @@ def location(request, city, location):
         city__slug=city,
         slug=location)
 
-    schedule = queries.get_schedule(city_slug=city, location_slug=location)
+    schedule = queries.get_schedule(city_slug=city,
+                                    location_slug=location,
+                                    days=7)
 
     if (API_PARAMETER in request.GET):
         return __JsonSchedule__(request, schedule)
