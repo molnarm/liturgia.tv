@@ -17,6 +17,11 @@ class EventInline(admin.TabularInline):
     fields = ('day_of_week', 'time', 'liturgy', 'name', 'valid_from',
               'valid_to', 'is_extraordinary')
     show_change_link = True
+        
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'liturgy':
+            kwargs["queryset"] = zsolozsma.models.Liturgy.objects.order_by('name')
+        return super(EventInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(zsolozsma.models.EventSchedule)
@@ -106,9 +111,9 @@ class LocationAdmin(LiturgiaTvAdmin):
     city_name.short_description = 'Település'
     city_name.admin_order_field = 'city__name'
 
-    list_display = ('city_name', 'name', 'last_checked')
+    list_display = ('city_name', 'name', 'last_checked', 'is_active')
     list_display_links = ('name', )
-    ordering = ['city__name', 'name']
+    ordering = ['-is_active', 'city__name', 'name']
     list_filter = ('city', )
 
     def get_queryset(self, request):
