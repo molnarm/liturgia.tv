@@ -1,11 +1,12 @@
-import re
+from datetime import datetime
+
+from django.conf import settings
+from django.http import Http404, HttpResponseGone, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, HttpResponseGone, JsonResponse
 from django.urls import reverse
+
 from zsolozsma import models
 from zsolozsma import queries
-from datetime import datetime
-from django.conf import settings
 
 API_PARAMETER = 'json'
 
@@ -13,7 +14,7 @@ API_PARAMETER = 'json'
 def home(request):
     schedule = queries.get_schedule()
 
-    if (API_PARAMETER in request.GET):
+    if API_PARAMETER in request.GET:
         return __JsonSchedule__(request, schedule)
 
     return render(request, "zsolozsma/home.html", {
@@ -53,7 +54,7 @@ def location(request, city, location):
                                     location_slug=location,
                                     days=7)
 
-    if (API_PARAMETER in request.GET):
+    if API_PARAMETER in request.GET:
         return __JsonSchedule__(request, schedule)
 
     return render(
@@ -72,7 +73,7 @@ def liturgy(request, liturgy):
 
     schedule = queries.get_schedule(liturgy_slug=liturgy)
 
-    if (API_PARAMETER in request.GET):
+    if API_PARAMETER in request.GET:
         return __JsonSchedule__(request, schedule)
 
     return render(
@@ -90,7 +91,7 @@ def city(request, city):
     city_object = get_object_or_404(models.City, slug=city)
     schedule = queries.get_schedule(city_slug=city)
 
-    if (API_PARAMETER in request.GET):
+    if API_PARAMETER in request.GET:
         return __JsonSchedule__(request, schedule)
 
     return render(
@@ -111,7 +112,7 @@ def denomination(request, denomination, city=None):
     schedule = queries.get_schedule(city_slug=city,
                                     denomination_slug=denomination)
 
-    if (API_PARAMETER in request.GET):
+    if API_PARAMETER in request.GET:
         return __JsonSchedule__(request, schedule)
 
     return render(
@@ -130,7 +131,7 @@ def miserend(request, id):
 
     schedule = queries.get_schedule(miserend_id=id)
 
-    if (API_PARAMETER in request.GET):
+    if API_PARAMETER in request.GET:
         return __JsonSchedule__(request, schedule)
 
     return render(
@@ -147,7 +148,7 @@ def miserend(request, id):
 def liturgytext(request, liturgy):
     liturgy_object = get_object_or_404(models.Liturgy, slug=liturgy)
 
-    if (liturgy_object.text):
+    if liturgy_object.text:
         return render(
             request, 'zsolozsma/liturgytext.html', {
                 'liturgy': liturgy_object,
@@ -171,8 +172,8 @@ def broadcast(request, hash, date):
     broadcast = queries.get_broadcast(schedule_object, date)
     state = queries.get_broadcast_status(schedule_object, date)
 
-    if (broadcast):
-        if (state == queries.BroadcastState.Past):
+    if broadcast:
+        if state == queries.BroadcastState.Past:
             return HttpResponseGone("Ez a közvetítés már nem elérhető.")
         elif (state == queries.BroadcastState.Live
               or state == queries.BroadcastState.Recent

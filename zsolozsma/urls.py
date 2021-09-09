@@ -1,6 +1,6 @@
-from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
+
 from zsolozsma import views
 
 urlpatterns = [

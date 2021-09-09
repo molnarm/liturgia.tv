@@ -62,7 +62,7 @@ class ScheduleItem(object):
         self.style = self.__get_style()
 
     def __get_style(self):
-        if (self.state == queries.BroadcastState.Live):
+        if self.state == queries.BroadcastState.Live:
             return 'live'
         elif (self.state == queries.BroadcastState.Upcoming
               or self.state == queries.BroadcastState.Recent):

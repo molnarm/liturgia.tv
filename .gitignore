@@ -1,6 +1,9 @@
 # Visual Studio Code
 .vscode/
 
+# PyCharm
+.idea
+
 # Python
 .venv/
 

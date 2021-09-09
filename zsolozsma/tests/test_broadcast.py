@@ -1,8 +1,9 @@
+from datetime import datetime, timedelta
+
 from django.test import TestCase
+
 from zsolozsma import queries
 from zsolozsma.models import *
-from datetime import datetime, timedelta
-from django.utils import timezone
 
 
 class BroadcastTests(TestCase):

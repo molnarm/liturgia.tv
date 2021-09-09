@@ -1,8 +1,9 @@
-from django.db import models
-from django.contrib.postgres.fields import ArrayField
-from tinymce.models import HTMLField
-from django.utils.text import slugify
 import secrets
+
+from django.db import models
+from django.utils.text import slugify
+from tinymce.models import HTMLField
+
 from zsolozsma import facebook, youtube
 
 
@@ -74,8 +75,7 @@ class Location(models.Model):
         'miserend.hu ID',
         blank=True,
         null=True,
-        help_text=
-        'A helyszín azonosítója a miserend.hu-n. Ha megadod, ott is megjelennek a közvetítések.'
+        help_text='A helyszín azonosítója a miserend.hu-n. Ha megadod, ott is megjelennek a közvetítések.'
     )
     last_checked = models.DateField('Utoljára ellenőrizve',
                                     auto_now=False,
@@ -212,7 +212,7 @@ class EventSchedule(models.Model):
                                    self.location.name, date_str, self.time)
 
     def save(self, *args, **kwargs):
-        if (self.pk is None or self.hash is None):
+        if self.pk is None or self.hash is None:
             self.hash = secrets.token_hex(4)
 
         super(EventSchedule, self).save(*args, **kwargs)
@@ -275,7 +275,7 @@ class Broadcast(models.Model):
                                 self.schedule.time)
 
     def get_video_embed_url(self):
-        if (self.video_youtube_channel):
+        if self.video_youtube_channel:
             return youtube.get_embed(self.video_youtube_channel)
         elif self.video_is_facebook():
             return facebook.get_embed_url(self.video_url)

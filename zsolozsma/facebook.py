@@ -2,7 +2,7 @@ import re
 
 
 def is_facebook(url):
-    if (not url):
+    if not url:
         return None
 
     return __match(url)
@@ -10,7 +10,7 @@ def is_facebook(url):
 
 def get_embed_url(url):
     match = __match(url)
-    if (match):
+    if match:
         return 'https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/' + match.group(
             1) + '/live'
 
