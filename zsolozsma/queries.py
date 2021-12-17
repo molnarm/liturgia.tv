@@ -82,8 +82,7 @@ def get_broadcast_status(schedule, date):
     if now.date() < date:
         return BroadcastState.Future
 
-    event_time = timezone.get_current_timezone().localize(
-        datetime.combine(date, schedule.time))
+    event_time = datetime.combine(date, schedule.time).replace(tzinfo=timezone.get_current_timezone())
 
     if schedule.valid_from and schedule.valid_from > date:
         return BroadcastState.Invalid
