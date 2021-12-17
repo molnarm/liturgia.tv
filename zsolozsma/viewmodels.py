@@ -11,15 +11,13 @@ class BroadcastItem(object):
         self.liturgy_name = schedule.liturgy.name
 
         self.starttime = datetime.combine(broadcast.date, schedule.time)
-        self.starttime_label = timezone.get_current_timezone().localize(
-            self.starttime)
+        self.starttime_label = self.starttime.replace(tzinfo=timezone.get_current_timezone())
 
         self.has_text = bool(broadcast.text_url)
         self.text_url = broadcast.text_url
         self.text_iframe = broadcast.text_iframe
 
-        is_16_9 = broadcast.video_youtube_channel or broadcast.video_is_facebook(
-        )
+        is_16_9 = broadcast.video_youtube_channel or broadcast.video_is_facebook()
 
         self.video_embed_url = broadcast.get_video_embed_url()
         self.video_link_url = youtube.get_link(
