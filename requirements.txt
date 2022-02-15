@@ -9,4 +9,4 @@ python-dotenv==0.19.2
 pytz==2021.3
 rope==0.22.0
 sqlparse==0.4.2
-whitenoise==5.3.0
+whitenoise==6.0.0
