@@ -7,6 +7,6 @@ gunicorn==21.2.0
 psycopg2==2.9.9
 python-dotenv==1.0.0
 pytz==2023.3.post1
-rope==1.11.0
+rope==1.12.0
 sqlparse==0.4.4
 whitenoise==6.6.0
