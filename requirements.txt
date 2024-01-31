@@ -5,7 +5,7 @@ django-heroku==0.3.1
 django-tinymce==3.6.1
 gunicorn==21.2.0
 psycopg2==2.9.9
-python-dotenv==1.0.0
+python-dotenv==1.0.1
 pytz==2023.4
 rope==1.12.0
 sqlparse==0.4.4
