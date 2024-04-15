@@ -8,5 +8,5 @@ psycopg2==2.9.9
 python-dotenv==1.0.1
 pytz==2023.4
 rope==1.12.0
-sqlparse==0.4.4
+sqlparse==0.5.0
 whitenoise==6.6.0
