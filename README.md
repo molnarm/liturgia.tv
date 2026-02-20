@@ -2,13 +2,15 @@
 Élő zsolozsma- és miseközvetítések szöveggel: https://liturgia.tv
 
 > [!CAUTION]
-> ## Az oldal 2026. februárban meg fog szűnni.
+> ## Az oldal megszűnt.
 > A liturgia.tv oldal a Covid járvány idején hirtelen ötletként, hiánypótló eszközként jött létre, hogy megkönnyítse a közvetítések elérését abban az időszakban, amikor a templomok zárva voltak. Elsőként a bencés zsolozsmaközvetítések kerültek fel. Majdnem 100 helyszín található az adatbázisban, 2021 Húsvétján szinte mindegyiknél volt közvetítés a vigíliáról. Valószínűleg ez volt a csúcspont (más szempontból persze a mélypont).
 > 
 > ## Miért?
 > A közvetítéseket megtalálni mindig is nehéz volt. A [miserendeket](https://miserend.hu/) felderíteni is óriási feladat, minden plébániáról máshogyan lehet megtudni, nem is mindenhol található meg a honlapon, ha van olyan egyáltalán. A közvetítések listája még ennél is keményebb dió volt, csak akkor volt biztos, ha külön jelezték - ami idővel egyre inkább elmaradt. Előre megtalálni ezeket pedig szinte lehetetlen - például októberben felderíteni, hogy mikor lesznek a roraték vagy néhány héttel előre összegyűjteni a nagyheti szertartásokat. Mindezt persze önkéntesen, szabadidőben. Ezúton is köszönöm Elek László atya támogatását.
 > 
-> Most, 2025-ben pedig már alig van jelentősége az oldalnak. A templomok nyitva vannak, közvetítés pedig egyre kevesebb, az oldal üzemeltetése pedig pénzbe és időbe kerül. A domain február közepén jár le, de a tartalom már régóta nem frissül. A megszűnés előtt elérhetővé teszem majd az összegyűjtött adatbázist.
+> Most, 2026-ban pedig már alig van jelentősége az oldalnak. A templomok nyitva, közvetítés egyre kevesebb van, az oldal üzemeltetése pedig pénzbe és időbe került. A domain február közepén járt le, de a tartalom már régóta nem frissült. 
+>
+> Az összegyűjtött közvetítési helyszínek listája itt elérhető: https://github.com/molnarm/liturgia.tv/blob/master/export/locations.md
 
 ## Mire jó?
 
